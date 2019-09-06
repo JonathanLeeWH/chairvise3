@@ -18,6 +18,12 @@ src/main/webapp/assets/*
 src/main/webapp/dist/*
 .gradle/*
 
+# Properties file
+src/main/resources/application-local.properties
+
+# ignore json files (especially for google cloud uses)
+*.json
+
 # Fronend dependency
 src/web/app/node_modules/*
 
