@@ -20,7 +20,6 @@ src/main/webapp/dist/*
 
 # Properties file
 src/main/resources/application-local.properties
-gradle/wrapper/gradle-wrapper.properties
 
 # ignore json files (especially for google cloud uses)
 *.json
