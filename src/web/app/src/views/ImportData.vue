@@ -221,17 +221,17 @@
              }
 
              //author anonymization - JCDL
-             if(this.$store.state.dataMapping.data.formatType=="1"){
-                var convert_string=require("convert-string");
-                for(var index=1;index<res2.length;index++){
-                    var convert=convert_string.stringToBytes(res2[index][3]);
-                    var name="";
-                    for(var idx=0;idx<convert.length;idx++){
-                        name=name.concat(String(convert[idx]+18));
-                    }
-                    res2[index][3]=name;
-                }
-             }
+             // if(this.$store.state.dataMapping.data.formatType=="1"){
+             //    var convert_string=require("convert-string");
+             //    for(var index=1;index<res2.length;index++){
+             //        var convert=convert_string.stringToBytes(res2[index][3]);
+             //        var name="";
+             //        for(var idx=0;idx<convert.length;idx++){
+             //            name=name.concat(String(convert[idx]+18));
+             //        }
+             //        res2[index][3]=name;
+             //    }
+             // }
              //console.log(res2);
            }
 
