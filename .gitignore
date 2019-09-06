@@ -18,6 +18,10 @@ src/main/webapp/assets/*
 src/main/webapp/dist/*
 .gradle/*
 
+# Properties file
+src/main/resources/application-local.properties
+gradle/wrapper/gradle-wrapper.properties
+
 # Fronend dependency
 src/web/app/node_modules/*
 
