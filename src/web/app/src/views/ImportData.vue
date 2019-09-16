@@ -179,21 +179,21 @@
                 //console.log(authorres)
               }
                 //author anonymization - Both formats
-                var convertstring=require("convert-string");
-                for(var m=1;m<res2.length;m++){
-                    var conv1=convertstring.stringToBytes(res2[m][1]);
-                    var conv2=convertstring.stringToBytes(res2[m][2]);
-                    var firstname="";
-                    var lastname="";
-                    for(var a=0;a<conv1.length;a++){
-                        firstname=firstname.concat(String(conv1[a]+18));
-                    }
-                    for(var w=0;w<conv2.length;w++){
-                        lastname=lastname.concat(String(conv2[w]+18));
-                    }
-                    res2[m][1]=firstname;
-                    res2[m][2]=lastname;
-                }
+                // var convertstring=require("convert-string");
+                // for(var m=1;m<res2.length;m++){
+                //     var conv1=convertstring.stringToBytes(res2[m][1]);
+                //     var conv2=convertstring.stringToBytes(res2[m][2]);
+                //     var firstname="";
+                //     var lastname="";
+                //     for(var a=0;a<conv1.length;a++){
+                //         firstname=firstname.concat(String(conv1[a]+18));
+                //     }
+                //     for(var w=0;w<conv2.length;w++){
+                //         lastname=lastname.concat(String(conv2[w]+18));
+                //     }
+                //     res2[m][1]=firstname;
+                //     res2[m][2]=lastname;
+                // }
                 //console.log(res2);
            }
 
@@ -221,17 +221,17 @@
              }
 
              //author anonymization - JCDL
-             if(this.$store.state.dataMapping.data.formatType=="1"){
-                var convert_string=require("convert-string");
-                for(var index=1;index<res2.length;index++){
-                    var convert=convert_string.stringToBytes(res2[index][3]);
-                    var name="";
-                    for(var idx=0;idx<convert.length;idx++){
-                        name=name.concat(String(convert[idx]+18));
-                    }
-                    res2[index][3]=name;
-                }
-             }
+             // if(this.$store.state.dataMapping.data.formatType=="1"){
+             //    var convert_string=require("convert-string");
+             //    for(var index=1;index<res2.length;index++){
+             //        var convert=convert_string.stringToBytes(res2[index][3]);
+             //        var name="";
+             //        for(var idx=0;idx<convert.length;idx++){
+             //            name=name.concat(String(convert[idx]+18));
+             //        }
+             //        res2[index][3]=name;
+             //    }
+             // }
              //console.log(res2);
            }
 
