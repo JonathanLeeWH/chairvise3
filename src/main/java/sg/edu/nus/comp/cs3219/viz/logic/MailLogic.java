@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.cs3219.viz.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sg.edu.nus.comp.cs3219.viz.common.util.JavaMailUtilities;
 
@@ -16,17 +18,17 @@ public class MailLogic {
 
     private static final Logger log = Logger.getLogger(MailLogic.class.getSimpleName());
 
-    private JavaMailUtilities javaMailUtilities;
+    @Value("${smtpconfiguration.mail.mailaddress}")
+    private String SmtpMailAddress;
 
-    public MailLogic() {
-        this.javaMailUtilities = new JavaMailUtilities();
-    }
+    @Autowired
+    private JavaMailUtilities javaMailUtilities;
 
     public void sendMessage() {
         try {
             Message message = new MimeMessage(this.javaMailUtilities.getJavaMailSession());
-            message.setFrom(new InternetAddress("<send from email address>"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("<send to email address>"));
+            message.setFrom(new InternetAddress(SmtpMailAddress));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("<Mail address to send to>"));
             message.setSubject("Hello World");
             message.setText("Hello World");
             Transport.send(message);
