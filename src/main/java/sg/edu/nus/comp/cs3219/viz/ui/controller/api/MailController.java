@@ -1,9 +1,10 @@
 package sg.edu.nus.comp.cs3219.viz.ui.controller.api;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import sg.edu.nus.comp.cs3219.viz.common.entity.Mail;
 import sg.edu.nus.comp.cs3219.viz.logic.MailLogic;
 
 import java.util.logging.Logger;
@@ -18,9 +19,9 @@ public class MailController extends BaseRestController {
         this.mailLogic = mailLogic;
     }
 
-    @RequestMapping("/send-mail")
-    public ResponseEntity<?> sendMail() {
-        this.mailLogic.sendMessage();
+    @PostMapping("/send-mail")
+    public ResponseEntity<?> sendMail(@RequestBody Mail mailRequest) {
+        this.mailLogic.sendMessage(mailRequest);
 
         return ResponseEntity.accepted().build();
     }
