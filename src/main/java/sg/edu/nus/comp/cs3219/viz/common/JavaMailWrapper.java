@@ -1,4 +1,4 @@
-package sg.edu.nus.comp.cs3219.viz.common.util;
+package sg.edu.nus.comp.cs3219.viz.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import javax.mail.Session;
 import java.util.Properties;
 
 @Component
-public class JavaMailUtilities {
+public class JavaMailWrapper {
 
     @Value("${smtpconfiguration.mail.host}")
     private String smtpHost;
