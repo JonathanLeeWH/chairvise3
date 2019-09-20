@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sg.edu.nus.comp.cs3219.viz.common.entity.Mail;
 import sg.edu.nus.comp.cs3219.viz.common.JavaMailWrapper;
+import sg.edu.nus.comp.cs3219.viz.common.exception.MailAddressException;
+import sg.edu.nus.comp.cs3219.viz.common.exception.MailMessageException;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -37,10 +39,13 @@ public class MailLogic {
             message.setSubject(mailRequest.getMailSubject());
             message.setText(mailRequest.getMailContent());
             Transport.send(message);
+            log.info("Mail successfully sent to: " + mailRequest.getMailTo());
         } catch (AddressException ex) {
-            log.info("Error Sending Email: " + ex.getMessage());
+            log.info(ex.getMessage());
+            throw new MailAddressException();
         } catch (MessagingException ex) {
-            log.info("Error Sending Email: " + ex.getMessage());
+            log.info(ex.getMessage());
+            throw new MailMessageException();
         }
     }
 }
