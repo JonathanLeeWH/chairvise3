@@ -13,6 +13,8 @@ public class Mail {
 
     private String mailContent;
 
+    private String attachmentName;
+
     public List<String> getMailTo() {
         return mailTo;
     }
@@ -23,6 +25,10 @@ public class Mail {
 
     public String getMailContent() {
         return mailContent;
+    }
+
+    public String getAttachmentName() {
+        return attachmentName;
     }
 
     public InternetAddress[] getMailToAsInternetAddress() throws AddressException {
