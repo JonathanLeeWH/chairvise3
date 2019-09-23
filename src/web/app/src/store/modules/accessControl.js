@@ -106,9 +106,9 @@ export default {
 
     async sendAccessControl({jsonMessage}) {
       let formData = new FormData();
-      // console.log(jsonMessage)
+      // console.log(jsonMessage);
       formData.append("mail", JSON.stringify(jsonMessage));
-      // console.log(JSON.stringify(jsonMessage))
+      // console.log(JSON.stringify(jsonMessage));
       // console.log(formData.get("mail"));
       await axios.post(`/api/send-mail`, formData)
     },
