@@ -25,6 +25,8 @@
     <el-form-item>
       <el-button type="primary" @click="downloadPDF()" v-if="!isInEditMode && !isNewPresentation">Download as PDF
       </el-button>
+      <el-button type="primary" @click="sendPDF()" v-if="!isInEditMode && !isNewPresentation">Send PDF to Self
+      </el-button>
       <el-button type="primary" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable">Edit
       </el-button>
       <el-button type="primary" @click="addPresentation()" v-if="isInEditMode">Save</el-button>
@@ -38,7 +40,7 @@
 
 <script>
   import AccessControlPanel from '@/components/AccessControlPanel'
-  import {download} from "@/store/helpers/pdfDownloader"
+  import {download, send} from "@/store/helpers/pdfDownloader"
   import {AccessLevel, ID_NEW_PRESENTATION, SPECIAL_IDENTIFIER_PUBLIC} from "@/common/const";
   import {deepCopy} from "@/common/utility";
 
@@ -217,7 +219,34 @@
             vm.$store.commit('setPageLoadingStatus', false);
           });
         });
-      }
+      },
+       sendPDF() {
+            let vm = this;
+            let currentUrl = window.location.href;
+            let wasPresentationEditable = deepCopy(vm.isPresentationEditable);
+            vm.$store.commit('setIsPresentationEditable', false);
+            vm.$store.commit('setPageLoadingStatus', true);
+
+           this.$nextTick(() => {
+               send(vm.presentationFormName)
+                .then((blob) => {
+                    this.$store.dispatch('sendPresentation', {
+                        jsonMessage: {
+                            mailTo: [this.$store.state.userInfo.userEmail],
+                            mailSubject: "Backup " + vm.presentationFormName + " Presentation",
+                            mailContent: "A pdf copy of the " + vm.presentationFormName + " presentation is attached. " +
+                                "You can view the presentation at " + currentUrl,
+                            attachmentName: vm.presentationFormName + ".pdf"
+                        },
+                        pdfBlob: blob
+                    })
+                })
+                .then(() => {
+                    vm.$store.commit('setIsPresentationEditable', wasPresentationEditable);
+                    vm.$store.commit('setPageLoadingStatus', false);
+                });
+        });
+       }
     },
 
     components: {
