@@ -36,7 +36,7 @@ public class MailLogic {
         this.javaMailWrapper = javaMailWrapper;
     }
 
-    public void sendMessage(Mail mailRequest, MultipartFile attachment) {
+    public void sendMessage(Mail mailRequest) {
         try {
             Message message = new MimeMessage(this.javaMailWrapper.getJavaMailSession());
             message.setFrom(new InternetAddress(smtpMailAddress));
@@ -49,6 +49,7 @@ public class MailLogic {
             messageBodyPart.setText(mailRequest.getMailContent());
             multiPartMessage.addBodyPart(messageBodyPart);
 
+            MultipartFile attachment = mailRequest.getAttachment();
             if (attachment != null) {
                 BodyPart attachmentBodyPart = new MimeBodyPart();
                 File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
