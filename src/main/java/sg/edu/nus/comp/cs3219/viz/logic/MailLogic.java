@@ -16,6 +16,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 @Component
@@ -76,6 +77,7 @@ public class MailLogic {
         if (mailRequest.getAttachment().isPresent()) {
             BodyPart attachmentBodyPart = new MimeBodyPart();
             MultipartFile attachment = mailRequest.getAttachment().get();
+            Objects.requireNonNull(attachment.getOriginalFilename());
             File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
             attachment.transferTo(new File(attachment.getOriginalFilename()));
             log.info("Attachment file location: " + multiPartLocation);
