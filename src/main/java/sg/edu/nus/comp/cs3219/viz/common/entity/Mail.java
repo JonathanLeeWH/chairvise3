@@ -6,6 +6,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Mail {
 
@@ -17,14 +18,14 @@ public class Mail {
 
     private String attachmentName;
 
-    private MultipartFile attachment;
+    private Optional<MultipartFile> attachment;
 
-    public void setAttachment(MultipartFile attachment) {
-        this.attachment = attachment;
+    public Optional<MultipartFile> getAttachment() {
+        return attachment;
     }
 
-    public MultipartFile getAttachment() {
-        return attachment;
+    public void setAttachment(Optional<MultipartFile> attachment) {
+        this.attachment = attachment;
     }
 
     public List<String> getMailTo() {
