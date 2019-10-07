@@ -38,32 +38,7 @@ public class MailLogic {
 
     public void sendMessage(Mail mailRequest) {
         try {
-            Message message = new MimeMessage(this.javaMailWrapper.getJavaMailSession());
-            message.setFrom(new InternetAddress(smtpMailAddress));
-            message.setRecipients(Message.RecipientType.TO, mailRequest.getMailToAsInternetAddress());
-            message.setSubject(mailRequest.getMailSubject());
-
-            Multipart multiPartMessage = new MimeMultipart();
-
-            BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText(mailRequest.getMailContent());
-            multiPartMessage.addBodyPart(messageBodyPart);
-
-            MultipartFile attachment = mailRequest.getAttachment();
-            if (attachment != null) {
-                BodyPart attachmentBodyPart = new MimeBodyPart();
-                File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
-                attachment.transferTo(new File(attachment.getOriginalFilename()));
-                log.info("Attachment file location: " + multiPartLocation);
-                log.info("Attachment MultipartFile OriginalName: " + attachment.getOriginalFilename());
-                DataSource dataSource = new FileDataSource(multiPartFileAttachment);
-                attachmentBodyPart.setDataHandler(new DataHandler(dataSource));
-                attachmentBodyPart.setFileName(mailRequest.getAttachmentName());
-                multiPartMessage.addBodyPart(attachmentBodyPart);
-            }
-
-            message.setContent(multiPartMessage);
-
+            Message message = prepareMessage(mailRequest);
             Transport.send(message);
             log.info("Mail successfully sent to: " + mailRequest.getMailTo());
 
@@ -73,6 +48,38 @@ public class MailLogic {
         } catch (MessagingException | IOException ex) {
             log.info(ex.getMessage());
             throw new MailMessageException();
+        }
+    }
+
+    private Message prepareMessage(Mail mailRequest) throws MessagingException, IOException {
+        Message message = new MimeMessage(this.javaMailWrapper.getJavaMailSession());
+        message.setFrom(new InternetAddress(smtpMailAddress));
+        message.setRecipients(Message.RecipientType.TO, mailRequest.getMailToAsInternetAddress());
+        message.setSubject(mailRequest.getMailSubject());
+
+        Multipart multiPartMessage = new MimeMultipart();
+
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setText(mailRequest.getMailContent());
+        multiPartMessage.addBodyPart(messageBodyPart);
+
+        prepareMessageAttachment(mailRequest, multiPartMessage);
+
+        message.setContent(multiPartMessage);
+    }
+
+    private void prepareMessageAttachment(Mail mailRequest, Multipart multiPartMessage) throws IOException, MessagingException {
+        MultipartFile attachment = mailRequest.getAttachment();
+        if (attachment != null) {
+            BodyPart attachmentBodyPart = new MimeBodyPart();
+            File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
+            attachment.transferTo(new File(attachment.getOriginalFilename()));
+            log.info("Attachment file location: " + multiPartLocation);
+            log.info("Attachment MultipartFile OriginalName: " + attachment.getOriginalFilename());
+            DataSource dataSource = new FileDataSource(multiPartFileAttachment);
+            attachmentBodyPart.setDataHandler(new DataHandler(dataSource));
+            attachmentBodyPart.setFileName(mailRequest.getAttachmentName());
+            multiPartMessage.addBodyPart(attachmentBodyPart);
         }
     }
 }
