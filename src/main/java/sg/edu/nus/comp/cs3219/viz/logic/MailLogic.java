@@ -66,6 +66,8 @@ public class MailLogic {
         prepareMessageAttachment(mailRequest, multiPartMessage);
 
         message.setContent(multiPartMessage);
+        
+        return message;
     }
 
     private void prepareMessageAttachment(Mail mailRequest, Multipart multiPartMessage) throws IOException, MessagingException {
