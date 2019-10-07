@@ -63,17 +63,19 @@ public class MailLogic {
         messageBodyPart.setText(mailRequest.getMailContent());
         multiPartMessage.addBodyPart(messageBodyPart);
 
-        prepareMessageAttachment(mailRequest, multiPartMessage);
+        if (mailRequest.getAttachment().isPresent()) {
+            prepareMessageAttachment(mailRequest, multiPartMessage);
+        }
 
         message.setContent(multiPartMessage);
-        
+
         return message;
     }
 
     private void prepareMessageAttachment(Mail mailRequest, Multipart multiPartMessage) throws IOException, MessagingException {
-        MultipartFile attachment = mailRequest.getAttachment();
-        if (attachment != null) {
+        if (mailRequest.getAttachment().isPresent()) {
             BodyPart attachmentBodyPart = new MimeBodyPart();
+            MultipartFile attachment = mailRequest.getAttachment().get();
             File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
             attachment.transferTo(new File(attachment.getOriginalFilename()));
             log.info("Attachment file location: " + multiPartLocation);
