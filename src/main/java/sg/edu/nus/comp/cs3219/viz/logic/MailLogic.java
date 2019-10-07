@@ -54,8 +54,8 @@ public class MailLogic {
                 BodyPart attachmentBodyPart = new MimeBodyPart();
                 File multiPartFileAttachment = new File(multiPartLocation + attachment.getOriginalFilename());
                 attachment.transferTo(new File(attachment.getOriginalFilename()));
-                log.info(multiPartLocation);
-                log.info(attachment.getOriginalFilename());
+                log.info("Attachment file location: " + multiPartLocation);
+                log.info("Attachment MultipartFile OriginalName: " + attachment.getOriginalFilename());
                 DataSource dataSource = new FileDataSource(multiPartFileAttachment);
                 attachmentBodyPart.setDataHandler(new DataHandler(dataSource));
                 attachmentBodyPart.setFileName(mailRequest.getAttachmentName());
