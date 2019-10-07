@@ -70,11 +70,9 @@ public class MailLogic {
         } catch (AddressException ex) {
             log.info(ex.getMessage());
             throw new MailAddressException();
-        } catch (MessagingException ex) {
+        } catch (MessagingException | IOException ex) {
             log.info(ex.getMessage());
             throw new MailMessageException();
-        } catch (IOException ex) {
-            log.info(ex.getMessage());
         }
     }
 }
