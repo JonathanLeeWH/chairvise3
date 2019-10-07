@@ -34,7 +34,8 @@ public class MailController extends BaseRestController {
 
         try {
             Mail mailRequest = new ObjectMapper().readValue(mailStringJson, Mail.class);
-            this.mailLogic.sendMessage(mailRequest, attachment);
+            mailRequest.setAttachment(attachment);
+            this.mailLogic.sendMessage(mailRequest);
         } catch (IOException ex) {
             log.info("Error sending mail: " + ex.getMessage());
             throw new MailMessageException();
