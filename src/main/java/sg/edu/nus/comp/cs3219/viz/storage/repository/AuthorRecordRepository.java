@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AuthorRecordRepository extends JpaRepository<AuthorRecord, Long> {
 
-    List<AuthorRecord> findByDataSetEquals(String dataSet);
+    List<AuthorRecord> findByRecordGroupIdEquals(Long recordGroupId);
 
     void deleteAllByRecordGroupIdEquals(Long recordGroupId);
 
