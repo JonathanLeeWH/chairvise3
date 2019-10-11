@@ -1,9 +1,12 @@
 package sg.edu.nus.comp.cs3219.viz.ui.controller.api;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import sg.edu.nus.comp.cs3219.viz.common.datatransfer.UserInfo;
+import sg.edu.nus.comp.cs3219.viz.common.entity.Mail;
+import sg.edu.nus.comp.cs3219.viz.logic.GateKeeper;
 import sg.edu.nus.comp.cs3219.viz.logic.MailLogic;
 
 import java.util.logging.Logger;
@@ -12,16 +15,23 @@ import java.util.logging.Logger;
 public class MailController extends BaseRestController {
     private static final Logger log = Logger.getLogger(MailController.class.getSimpleName());
 
-    private MailLogic mailLogic;
+    private final MailLogic mailLogic;
 
-    public MailController(MailLogic mailLogic) {
+    private final GateKeeper gateKeeper;
+
+    public MailController(MailLogic mailLogic, GateKeeper gateKeeper) {
         this.mailLogic = mailLogic;
+        this.gateKeeper = gateKeeper;
     }
 
-    @RequestMapping("/send-mail")
-    public ResponseEntity<?> sendMail() {
-        this.mailLogic.sendMessage();
+    @PostMapping("/send-mail")
+    public ResponseEntity<?> sendMail(@RequestBody Mail mailRequest) {
+        UserInfo currentUser = gateKeeper.verifyLoginAccess();
 
-        return ResponseEntity.accepted().build();
+        log.info(currentUser.getUserEmail() + " request to send mail received.");
+
+        this.mailLogic.sendMessage(mailRequest);
+
+        return ResponseEntity.ok().body("Mail has been sent successfully.");
     }
 }
