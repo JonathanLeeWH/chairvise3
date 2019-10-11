@@ -9,6 +9,6 @@ public interface AuthorRecordRepository extends JpaRepository<AuthorRecord, Long
 
     List<AuthorRecord> findByDataSetEquals(String dataSet);
 
-    void deleteAllByDataSetEquals(String dataSet);
+    void deleteAllByRecordGroupIdEquals(Long recordGroupId);
 
 }
