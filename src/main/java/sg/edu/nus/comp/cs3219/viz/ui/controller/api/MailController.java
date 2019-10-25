@@ -11,6 +11,7 @@ import sg.edu.nus.comp.cs3219.viz.logic.GateKeeper;
 import sg.edu.nus.comp.cs3219.viz.logic.MailLogic;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -34,7 +35,8 @@ public class MailController extends BaseRestController {
 
         try {
             Mail mailRequest = new ObjectMapper().readValue(mailStringJson, Mail.class);
-            this.mailLogic.sendMessage(mailRequest, attachment);
+            mailRequest.setAttachment(Optional.ofNullable(attachment));
+            this.mailLogic.sendMessage(mailRequest);
         } catch (IOException ex) {
             log.info("Error sending mail: " + ex.getMessage());
             throw new MailMessageException();

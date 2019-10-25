@@ -9,7 +9,7 @@ import javax.mail.Session;
 import java.util.Properties;
 
 @Component
-public class JavaMailWrapper {
+public class JavaMailCommons {
 
     @Value("${smtpconfiguration.mail.host}")
     private String smtpHost;
