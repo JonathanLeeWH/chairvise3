@@ -12,7 +12,7 @@ import {
 
 let doc, marginTop;
 
-function initialisePdf(presentationFormName) {
+function initialisePDF(presentationFormName) {
     doc = new JavascriptPDF("p", "mm", "a4");
     marginTop = PDF_CHART_MARGIN_TOP;
     doc.setFontSize(TITLE_FONT_SIZE);
@@ -20,13 +20,13 @@ function initialisePdf(presentationFormName) {
 }
 
 export function download(presentationFormName) {
-    initialisePdf(presentationFormName);
+    initialisePDF(presentationFormName);
 
     return createPDF(presentationFormName);
 }
 
 export function send(presentationFormName) {
-    initialisePdf(presentationFormName);
+    initialisePDF(presentationFormName);
 
     return createPDF(presentationFormName, true);
 }
