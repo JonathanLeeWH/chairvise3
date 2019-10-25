@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sg.edu.nus.comp.cs3219.viz.common.entity.Mail;
-import sg.edu.nus.comp.cs3219.viz.common.JavaMailWrapper;
+import sg.edu.nus.comp.cs3219.viz.common.JavaMailCommons;
 import sg.edu.nus.comp.cs3219.viz.common.exception.MailAddressException;
 import sg.edu.nus.comp.cs3219.viz.common.exception.MailMessageException;
 
@@ -30,11 +30,11 @@ public class MailLogic {
     @Value("${spring.servlet.multipart.location=${java.io.tmpdir}}")
     private String multiPartLocation;
 
-    private JavaMailWrapper javaMailWrapper;
+    private JavaMailCommons javaMailCommons;
 
     @Autowired
-    public MailLogic(JavaMailWrapper javaMailWrapper) {
-        this.javaMailWrapper = javaMailWrapper;
+    public MailLogic(JavaMailCommons javaMailCommons) {
+        this.javaMailCommons = javaMailCommons;
     }
 
     public void sendMessage(Mail mailRequest) {
@@ -53,7 +53,7 @@ public class MailLogic {
     }
 
     private Message prepareMessage(Mail mailRequest) throws MessagingException, IOException {
-        Message message = new MimeMessage(this.javaMailWrapper.getJavaMailSession());
+        Message message = new MimeMessage(this.javaMailCommons.getJavaMailSession());
         message.setFrom(new InternetAddress(smtpMailAddress));
         message.setRecipients(Message.RecipientType.TO, mailRequest.getMailToAsInternetAddress());
         message.setSubject(mailRequest.getMailSubject());
