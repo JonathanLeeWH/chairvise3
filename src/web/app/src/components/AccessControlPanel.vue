@@ -248,6 +248,16 @@
             accessLevel: this.accessControlFormAccessLevel
           })
             .then(() => {
+              this.$store.dispatch('sendAccessControl', {
+                  jsonMessage: {
+                    mailTo: [this.accessControlFormUserIdentifier],
+                    mailSubject: this.$store.state.userInfo.userNickname + " has shared a presentation with you",
+                    mailContent: this.$store.state.userInfo.userEmail + " has shared a presentation with you. " +
+                            "You can view the presentation at " + this.currentUrl
+                  }
+              })
+            })
+            .then(() => {
               this.accessControlFormUserIdentifier = '';
               this.accessControlFormAccessLevel = '';
               this.$refs['accessControlForm'].resetFields();
