@@ -162,7 +162,6 @@ export default {
     },
 
     async sendPresentation({commit}, {jsonMessage, pdfBlob}) {
-      debugger;
       commit('setPageLoadingStatus', true);
       let formData = new FormData();
       // console.log(jsonMessage);
