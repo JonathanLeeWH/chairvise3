@@ -29,11 +29,10 @@
       </el-button>
       <el-button type="primary" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable">Edit
       </el-button>
-      <el-button type="primary" @click="addPresentation()" v-if="isInEditMode">Save</el-button>
+      <el-button type="success" @click="addPresentation()" v-if="isInEditMode">Save</el-button>
       <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation">Cancel</el-button>
       <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
-                 @click="deletePresentation()">Delete
-      </el-button>
+                 @click="open">Delete</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -246,7 +245,23 @@
                     vm.$store.commit('setPageLoadingStatus', false);
                 });
         });
-       }
+       },
+        open() {
+          this.$confirm('This will permanently delete the presentation. Are you sure?', 'Deleting Presentation', {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            roundButton: true,
+            type: 'warning'
+          }).then(() => {
+            this.deletePresentation();
+            this.$message({
+              type: 'success',
+              message: 'Successfully deleted the presentation!'
+            });
+          }).catch(() => {
+            // Don't display any message
+          });
+        }
     },
 
     components: {
