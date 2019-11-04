@@ -28,6 +28,12 @@ public class RecordGroup {
     @Column(name = "rg_name")
     private String recordGroupName;
 
+    private boolean isAuthorRecordUploaded;
+
+    private boolean isReviewRecordUploaded;
+
+    private boolean isSubmissionRecordUploaded;
+
     public Long getId() {
         return id;
     }
@@ -50,5 +56,29 @@ public class RecordGroup {
 
     public void setRecordGroupName(String recordGroupName) {
         this.recordGroupName = recordGroupName;
+    }
+
+    public boolean getAuthorRecordUploadStatus() {
+        return isAuthorRecordUploaded;
+    }
+
+    public void setAuthorRecordUploadStatus(boolean isAuthorRecordUploaded) {
+        this.isAuthorRecordUploaded = isAuthorRecordUploaded;
+    }
+
+    public boolean getReviewRecordUploadedStatus() {
+        return isReviewRecordUploaded;
+    }
+
+    public void setReviewRecordUploadStatus(boolean isReviewRecordUploaded) {
+        this.isReviewRecordUploaded = isReviewRecordUploaded;
+    }
+
+    public boolean getSubmissionRecordUploadStatus() {
+        return isAuthorRecordUploaded;
+    }
+
+    public void setSubmissionRecordUploadStatus(boolean isSubmissionRecordUploaded) {
+        this.isSubmissionRecordUploaded = isSubmissionRecordUploaded;
     }
 }
