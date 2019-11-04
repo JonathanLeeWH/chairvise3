@@ -3,11 +3,12 @@
     <el-menu-item index="/home">Home</el-menu-item>
     <el-menu-item index="/analyze" :disabled="!isLogin">Analyze</el-menu-item>
     <el-menu-item index="/importData" :disabled="!isLogin">Import Data</el-menu-item>
-    <el-menu-item index="/logout" v-if="isLogin" @click="logout" v-loading.fullscreen.lock="isFullscreenLoading">
-      <el-button type="success" plain>Logout ({{ userNickname }})</el-button>
+    <el-menu-item index="/logout" v-if="isLogin" @click="logout" v-loading.fullscreen.lock="isFullscreenLoading"
+                  style="position:absolute;right:0">
+      <el-button type="danger" plain>Logout ({{ userNickname }})</el-button>
     </el-menu-item>
     <el-menu-item index="/login" v-if="!isLogin" :disabled="isApiError" @click="login"
-                  v-loading.fullscreen.lock="isFullscreenLoading">
+                  v-loading.fullscreen.lock="isFullscreenLoading" style="position:absolute;right:0">
       <el-button type="success" plain :disabled="isApiError">Login</el-button>
     </el-menu-item>
   </el-menu>
