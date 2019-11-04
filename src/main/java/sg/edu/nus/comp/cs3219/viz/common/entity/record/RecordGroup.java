@@ -28,10 +28,16 @@ public class RecordGroup {
     @Column(name = "rg_name")
     private String recordGroupName;
 
+    @Exportable(name = "Is Author Record Uploaded", nameInDB = "isAuthorRecordUploaded")
+    @Column(name = "isAuthorRecordUploaded")
     private boolean isAuthorRecordUploaded;
 
+    @Exportable(name = "Is Review Record Uploaded", nameInDB = "isReviewRecordUploaded")
+    @Column(name = "isReviewRecordUploaded")
     private boolean isReviewRecordUploaded;
 
+    @Exportable(name = "Is Submission Record Uploaded", nameInDB = "isSubmissionRecordUploaded")
+    @Column(name = "isSubmissionRecordUploaded")
     private boolean isSubmissionRecordUploaded;
 
     public Long getId() {
