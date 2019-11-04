@@ -2,10 +2,12 @@ package sg.edu.nus.comp.cs3219.viz.logic;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import sg.edu.nus.comp.cs3219.viz.common.datatransfer.UserInfo;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.*;
 import sg.edu.nus.comp.cs3219.viz.storage.repository.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,14 +34,32 @@ public class RecordLogic {
         this.recordGroupRepository = recordGroupRepository;
     }
 
-    @Transactional
-    public void addRecordGroup(RecordGroup recordGroup) {
-        recordGroupRepository.save(recordGroup);
+    public List<RecordGroup> findAllForUser(UserInfo userInfo) {
+        return recordGroupRepository.findByDataSetEquals(userInfo.getUserEmail());
     }
 
-    @Transactional
-    public void removeAndPersistRecordGroup(Long recordGroupId) {
-        recordGroupRepository.deleteById(recordGroupId);
+    public Optional<RecordGroup> findById(Long id) {
+        return recordGroupRepository.findById(id);
+    }
+
+    public RecordGroup saveForRecordGroup(RecordGroup recordGroup, UserInfo userInfo) {
+        RecordGroup newRecordGroup = new RecordGroup();
+        newRecordGroup.setRecordGroupName(recordGroup.getRecordGroupName());
+        newRecordGroup.setDataSet(userInfo.getUserEmail());
+        newRecordGroup.setAuthorRecordUploadStatus(false);
+        newRecordGroup.setReviewRecordUploadStatus(false);
+        newRecordGroup.setSubmissionRecordUploadStatus(false);
+
+        return recordGroupRepository.save(recordGroup);
+    }
+
+    public RecordGroup updateRecordGroup(RecordGroup oldRecordGroup, RecordGroup newRecordGroup) {
+        oldRecordGroup.setRecordGroupName(newRecordGroup.getRecordGroupName());
+        return recordGroupRepository.save(oldRecordGroup);
+    }
+
+    public void deleteRecordGroupById(long id) {
+        recordGroupRepository.deleteById(id);
     }
 
     @Transactional
