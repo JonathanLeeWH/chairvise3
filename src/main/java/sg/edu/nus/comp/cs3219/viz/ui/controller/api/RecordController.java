@@ -29,12 +29,10 @@ public class RecordController extends BaseRestController {
     }
 
     @PostMapping("/record/record_groups")
-    public ResponseEntity<?> addRecordGroup(@RequestBody String recordGroupName) throws URISyntaxException {
+    public ResponseEntity<?> addRecordGroup(@RequestBody RecordGroup recordGroup) throws URISyntaxException {
         UserInfo userInfo = gateKeeper.verifyLoginAccess();
-        RecordGroup recordGroup = new RecordGroup();
 
         recordGroup.setDataSet(userInfo.getUserEmail());
-        recordGroup.setRecordGroupName(recordGroupName);
 
         RecordGroup newRecordGroup = this.recordLogic.saveForRecordGroup(recordGroup, userInfo);
 
