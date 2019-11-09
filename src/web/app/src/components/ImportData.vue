@@ -273,7 +273,6 @@
   .upload-box {
     width: 100%;
     text-align: center;
-    padding-top: 100px;
   }
 
   .upload-box .el-select {

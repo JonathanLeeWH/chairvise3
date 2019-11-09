@@ -12,11 +12,11 @@
             <el-tab-pane label="Select From Existing Record Group">
                 <el-form>
                     <el-form-item>
-                        <el-select v-model="recordGroups" placeholder="Record Groups">
-                            <el-option v-for="{recordGroup} in recordGroups"
-                                       v-bind:key="recordGroup.id"
-                                       v-bind:value="recordGroup.id">
-                                {{ recordGroup.recordGroupName }}
+                        <el-select v-model="recordGroupId" placeholder="Record Groups">
+                            <el-option v-for="recordGroup in recordGroups"
+                                       :key="recordGroup.recordGroupName"
+                                       :label="recordGroup.recordGroupName"
+                                       :value="recordGroup.id">
                             </el-option>
                         </el-select>
                         <el-button v-on:click="readyForDisplayRecordUploaded">Select</el-button>
@@ -24,25 +24,29 @@
                 </el-form>
             </el-tab-pane>
         </el-tabs>
-        <div v-if="isReadyForDisplayRecordUploaded">
-            <div id="author-record">
-                <label>Author Record:</label>
-                <span v-if="isAuthorRecordUploaded">Author Record Already Uploaded</span>
-                <span v-else>Author Record Not Uploaded Yet</span>
+        <el-card id="recordUploaded" v-if="isReadyForDisplayRecordUploaded">
+            <div class="upload-status">
+                <label>Record Group Name: </label>
+                <el-input>{{ recordGroupName }}</el-input>
+                <el-button>Update</el-button>
             </div>
-            <div id="review-record">
-                <label>Review Record:</label>
-                <span v-if="isReviewRecordUploaded">Review Record Already Uploaded</span>
-                <span v-else>Review Record Not Uploaded Yet</span>
+            <div class="upload-status" id="author-record">
+                <label>Author Record: </label>
+                <span v-if="isAuthorRecordUploaded">Already Uploaded</span>
+                <span v-else>Not Uploaded Yet</span>
             </div>
-            <div id="submission-record">
-                <label>Submission Record:</label>
-                <span v-if="isSubmissionRecordUploaded">Submission Record Already Uploaded</span>
-                <span v-else>Submission Record Not Uploaded Yet</span>
+            <div class="upload-status" id="review-record">
+                <label>Review Record: </label>
+                <span v-if="isReviewRecordUploaded">Already Uploaded</span>
+                <span v-else>Not Uploaded Yet</span>
             </div>
-            <el-button>Upload</el-button>
+            <div class="upload-status" id="submission-record">
+                <label>Submission Record: </label>
+                <span v-if="isSubmissionRecordUploaded">Already Uploaded</span>
+                <span v-else>Not Uploaded Yet</span>
+            </div>
             <import-data/>
-        </div>
+        </el-card>
     </div>
 </template>
 
@@ -64,12 +68,9 @@
             isAppLoading: function () {
                 return this.$store.state.isPageLoading || this.$store.state.dbMetaData.entitiesStatus.isLoading;
             },
-            dbSchemas: function () {
-                return this.$store.state.dbMetaData.entities;
-            },
             recordGroups() {
                 return this.$store.state.recordGroup.recordGroupList;
-            }
+            },
         },
         methods: {
             readyForDisplayRecordUploaded: function () {
@@ -135,5 +136,11 @@
      }
     .el-select {
         width: 100%;
+    }
+    .upload-status{
+        padding: 10px 0;
+    }
+    #recordUploaded{
+        padding: 20px 0;
     }
 </style>
