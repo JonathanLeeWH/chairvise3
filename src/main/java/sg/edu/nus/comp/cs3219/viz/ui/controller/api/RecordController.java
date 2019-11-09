@@ -36,9 +36,19 @@ public class RecordController extends BaseRestController {
         recordGroup.setDataSet(userInfo.getUserEmail());
         recordGroup.setRecordGroupName(recordGroupName);
 
-        this.recordLogic.saveForRecordGroup(recordGroup, userInfo);
+        RecordGroup newRecordGroup = this.recordLogic.saveForRecordGroup(recordGroup, userInfo);
 
-        return ResponseEntity.created(new URI("/record/record_group")).build();
+        return ResponseEntity.created(new URI("/record/record_group/" + newRecordGroup.getId())).build();
+    }
+
+    @GetMapping("/record/record_groups/{recordGroupId}")
+    public RecordGroup getRecordGroup(@PathVariable Long recordGroupId) throws URISyntaxException {
+        gateKeeper.verifyLoginAccess();
+
+        RecordGroup recordGroup = this.recordLogic.findById(recordGroupId)
+                .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
+
+        return recordGroup;
     }
 
     @PutMapping("/record/record_groups/{id}")
@@ -62,10 +72,10 @@ public class RecordController extends BaseRestController {
 
         this.recordLogic.deleteRecordGroupById(recordGroupId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/record_groups")
+    @GetMapping("/record/record_groups")
     public List<RecordGroup> all() {
         UserInfo currentUser = gateKeeper.verifyLoginAccess();
 
