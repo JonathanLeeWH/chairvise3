@@ -11,7 +11,11 @@ export default {
         },
         recordGroupForm: {
             id: '',
-            name: ''
+            recordGroupName: '',
+            dataset:'',
+            authorRecordUploadStatus:false,
+            reviewRecordUploadStatus:false,
+            submissionRecordUploadStatus:false
         },
         recordGroupFormStatus: {
             isLoading: false,
@@ -71,10 +75,10 @@ export default {
         resetRecordGroupForm(state) {
             state.recordGroupForm.id = '';
             state.recordGroupForm.name = '';
-            state.recordGroupForm.isAuthorRecordUploaded = false;
-            state.recordGroupForm.isReviewRecordUploaded = false;
-            state.recordGroupForm.isSubmissionRecordUploaded = false;
-            state.recordGroupForm.creatorIdentifier = '';
+            state.recordGroupForm.authorRecordUploaded = false;
+            state.recordGroupForm.reviewRecordUploaded = false;
+            state.recordGroupForm.submissionRecordUploaded = false;
+            state.recordGroupForm.dataset = '';
             state.recordGroupFormStatus.isLoading = false;
             state.recordGroupFormStatus.isApiError = false;
             state.recordGroupFormStatus.apiErrorMsg = '';
