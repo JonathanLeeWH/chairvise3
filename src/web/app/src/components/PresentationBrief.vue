@@ -26,21 +26,21 @@
 
         <el-form-item>
             <el-dropdown @command="handleDownloadCommand" v-if="!isInEditMode && !isNewPresentation">
-                <el-button type="primary" style="margin-right: 10px" icon="el-icon-download">
+                <el-button type="primary" style="margin-right: 10px">
                     Download<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="pdf">PDF Document (.pdf)</el-dropdown-item>
-                    <el-dropdown-item command="email-self">Email to self</el-dropdown-item>
+                    <el-dropdown-item command="email-self">Email as attachment</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="warning" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable"
                        icon="el-icon-edit">Edit</el-button>
-            <el-button type="success" @click="addPresentation()" v-if="isInEditMode"> Save</el-button>
+            <el-button type="success" @click="addPresentation()" v-if="isInEditMode" icon="el-icon-check"> Save</el-button>
             <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation"
                        icon="el-icon-close">Cancel</el-button>
             <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
-                       icon="el-icon-delete" @click="open">Delete</el-button>
+                       icon="el-icon-delete" @click="deletePresentation(presentationForm.name)">Delete</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -177,20 +177,34 @@
           }
         });
       },
-      deletePresentation() {
-        this.$store.dispatch('deletePresentation', this.id)
-            .then(() => {
-              if (this.isError) {
-                return
-              }
-              this.$router.replace({
-                name: 'analyze',
-                params: {
-                  id: ID_NEW_PRESENTATION
+      deletePresentation(name) {
+        this.$confirm('This will permanently delete the presentation "' + name + '". Are you sure?',
+            'Deleting Presentation', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          roundButton: true,
+          type: 'warning'
+        }).then(() => {
+          this.$store.dispatch('deletePresentation', this.id)
+              .then(() => {
+                if (this.isError) {
+                  return
                 }
+                this.$router.replace({
+                  name: 'analyze',
+                  params: {
+                    id: ID_NEW_PRESENTATION
+                  }
+                });
+                this.isEditing = false;
               });
-              this.isEditing = false;
-            })
+          this.$message({
+            type: 'success',
+            message: 'Successfully deleted the presentation!'
+          });
+        }).catch(() => {
+          // Don't display any message
+        });
       },
       updatePresentationForm() {
         if (this.$refs['presentationForm']) {
@@ -257,22 +271,7 @@
               });
         });
       },
-      open() {
-        this.$confirm('This will permanently delete the presentation. Are you sure?', 'Deleting Presentation', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel',
-          roundButton: true,
-          type: 'warning'
-        }).then(() => {
-          this.deletePresentation();
-          this.$message({
-            type: 'success',
-            message: 'Successfully deleted the presentation!'
-          });
-        }).catch(() => {
-          // Don't display any message
-        });
-      },
+
       handleDownloadCommand(command) {
         if (command === "pdf") {
           this.downloadPDF();
