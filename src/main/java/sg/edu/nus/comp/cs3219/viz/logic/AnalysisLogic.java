@@ -7,8 +7,12 @@ import sg.edu.nus.comp.cs3219.viz.common.entity.PresentationSection;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.AuthorRecord;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.Exportable;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.ReviewRecord;
+import sg.edu.nus.comp.cs3219.viz.common.entity.record.SubmissionAuthorRecord;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.SubmissionRecord;
+import sg.edu.nus.comp.cs3219.viz.storage.repository.AuthorRecordRepository;
+import sg.edu.nus.comp.cs3219.viz.storage.repository.SubmissionRecordRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +45,16 @@ public class AnalysisLogic {
 
     private JdbcTemplate jdbcTemplate;
 
-    public AnalysisLogic(JdbcTemplate jdbcTemplate) {
+    private AuthorRecordRepository authorRecordRepository;
+
+    private SubmissionRecordRepository submissionRecordRepository;
+
+    public AnalysisLogic(JdbcTemplate jdbcTemplate,
+                         AuthorRecordRepository authorRecordRepository,
+                         SubmissionRecordRepository submissionRecordRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.authorRecordRepository = authorRecordRepository;
+        this.submissionRecordRepository = submissionRecordRepository;
     }
 
     public List<Map<String, Object>> analyse(AnalysisRequest analysisRequest) {
@@ -50,6 +62,100 @@ public class AnalysisLogic {
 
         log.info("Analysis Query: " + sql);
         return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> analyseCoauthorship(AnalysisRequest analysisRequest) {
+        String dataSet = analysisRequest.getDataSet();
+        Map<String, Object> extraData = analysisRequest.getExtraData();
+        String collabType = extraData.get("collabType").toString();
+
+        Logger log = Logger.getLogger(RecordLogic.class.getSimpleName());
+
+        List<AuthorRecord> authorExisting = authorRecordRepository.findByDataSetEquals(dataSet);
+        if (authorExisting == null) {
+            log.info("authorRepo is null");
+            return null;
+        }
+
+        List<SubmissionRecord> submissionExisting = submissionRecordRepository.findByDataSetEquals(dataSet);
+        if (submissionExisting == null) {
+            log.info("submissionRepo is null");
+            return null;
+        }
+
+        Map<String, AuthorRecord> authorRecordMap = new HashMap<String, AuthorRecord>();
+
+        authorExisting.stream().forEach(a -> {
+            String firstName = a.getFirstName();
+            String lastName = a.getLastName();
+            String fullName = firstName + " " + lastName;
+            authorRecordMap.put(fullName, a);
+        });
+
+        Map<String, Integer> collaboration = new HashMap<String, Integer>();
+
+        submissionExisting.stream().forEach(s -> {
+            List<SubmissionAuthorRecord> authorNames = s.getAuthorSet();
+
+            if (authorNames != null && authorNames.size() > 1) {
+                for (int i = 0; i < authorNames.size() - 1; i++) {
+
+                    String authorNameOne = authorNames.get(i).getName();
+                    if (authorRecordMap.get(authorNameOne) == null) {
+                        continue;
+                    }
+                    String firstValue = "";
+
+                    if (collabType.equals("country")) {
+                        firstValue = authorRecordMap.get(authorNameOne).getCountry();
+                    } else if (collabType.equals("organization")) {
+                        firstValue = authorRecordMap.get(authorNameOne).getOrganisation();
+                    }
+
+                    int j = i + 1;
+                    for (; j < authorNames.size(); j++) {
+                        String authorNameTwo = authorNames.get(j).getName();
+                        if (authorRecordMap.get(authorNameTwo) == null) {
+                            continue;
+                        }
+
+                        String secondValue = "";
+                        if (collabType.equals("country")) {
+                            secondValue = authorRecordMap.get(authorNameTwo).getCountry();
+                        } else if (collabType.equals("organization")) {
+                            secondValue = authorRecordMap.get(authorNameTwo).getOrganisation();
+                        }
+
+                        List<String> tempListForSort = new ArrayList<>();
+                        tempListForSort.add(firstValue);
+                        tempListForSort.add(secondValue);
+                        java.util.Collections.sort(tempListForSort);
+
+                        String combinedValue = tempListForSort.get(0) + "-" + tempListForSort.get(1);
+
+                        if (collaboration.containsKey(combinedValue)) {
+                            int noOfCollaboration = collaboration.get(combinedValue);
+                            noOfCollaboration++;
+                            collaboration.put(combinedValue, noOfCollaboration);
+                        } else {
+                            collaboration.put(combinedValue, 1);
+                        }
+                    }
+                }
+            }
+        });
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        collaboration.forEach((key, num) -> {
+            Map<String, Object> map = new HashMap<String, Object>() {{
+                put(collabType, key);
+                put("value", num);
+            }};
+            result.add(map);
+        });
+
+        return result;
     }
 
     private String generateSQL(AnalysisRequest analysisRequest) {
