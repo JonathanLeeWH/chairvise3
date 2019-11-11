@@ -132,6 +132,10 @@
 
       addNewSection() {
         if (this.selectedNewSection.length === 0) {
+          this.$message({
+            type: 'error',
+            message: 'Please select a section to add!'
+          });
           return;
         }
         this.$store.dispatch('addSectionDetail', {
@@ -139,7 +143,7 @@
           selectedNewSection: this.selectedNewSection,
           dataSet: this.$store.state.userInfo.userEmail,
         }).then(() => {
-          this.selectedNewSection = ''
+          this.selectedNewSection = '';
         })
       }
     }
