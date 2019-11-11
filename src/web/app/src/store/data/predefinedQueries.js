@@ -1,4 +1,48 @@
 export default {
+    "country_country_collaboration": {
+        name: "Country to County Collaboration",
+        group: 'Co-Authorship',
+        data: {
+            type: 'pie_chart',
+            title: 'Country to County Collaboration',
+            dataSet: '${PLACEHOLDER_DATA_SET}',
+            description: 'This pie chart shows the percentage and number of collaboration papers between countries',
+            selections: [],
+            involvedRecords: [],
+            filters: [],
+            joiners: [],
+            groupers: [],
+            sorters: [],
+            extraData: {
+              collabType: 'country',
+              categoryFieldName: 'country',
+              valueFieldName: 'value',
+              numOfResultToDisplay: 30,
+            }
+        }
+    },
+  "organization_organization_collaboration": {
+    name: "Organization to Organization Collaboration",
+    group: 'Co-Authorship',
+    data: {
+      type: 'pie_chart',
+      title: 'Organization to Organization Collaboration',
+      dataSet: '${PLACEHOLDER_DATA_SET}',
+      description: 'This pie chart shows the percentage and number of collaboration papers between organization',
+      selections: [],
+      involvedRecords: [],
+      filters: [],
+      joiners: [],
+      groupers: [],
+      sorters: [],
+      extraData: {
+        collabType: 'organization',
+        categoryFieldName: 'organization',
+        valueFieldName: 'value',
+        numOfResultToDisplay: 30,
+      }
+    }
+  },
   "word_cloud_keywords_all_submission": {
     name: "Word Cloud for All Submissions Keywords",
     group: 'Submission Record',
