@@ -2,7 +2,7 @@
   <div>
     <el-row class="addRowRightAlign" v-if="isNewPresentation">
       <el-alert
-        title="Please create presentation before adding sections"
+        title="Remember to import data before adding sections"
         type="info"
         show-icon>
       </el-alert>

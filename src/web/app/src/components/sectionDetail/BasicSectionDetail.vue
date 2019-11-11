@@ -32,7 +32,6 @@
             <slot v-else></slot>
             <div v-if="!isEditing" class="description">{{ editForm.description }}</div>
             <div v-if="isEditing">
-
                 <el-form-item label="Editing Mode">
                     <el-switch
                         v-model="isInAdvancedMode"
@@ -454,8 +453,7 @@
               groupers: this.editForm.groupers.map(g => ({field: g})),
               sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
               extraData: this.editForm.extraData
-            })
-                .then(() => {
+            }).then(() => {
                   // only update when there is no error in saving
                   if (this.sectionDetail.status.isApiError) {
                     return
@@ -506,8 +504,7 @@
             joiners: this.editForm.joiners.map(j => Object.assign({}, j)),
             groupers: this.editForm.groupers.map(g => ({field: g})),
             sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
-          })
-              .then(() => {
+          }).then(() => {
                 this.$emit('update-visualisation', {
                   selections: this.editForm.selections,
                   involvedRecords: this.editFormInvolvedRecords,
@@ -538,6 +535,7 @@
               });
             })
       },
+
       handleAddCommand(command) {
         if (command === "filter") {
           this.addFilter();
