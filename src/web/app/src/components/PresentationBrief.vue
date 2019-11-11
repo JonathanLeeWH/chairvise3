@@ -35,14 +35,12 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="warning" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable"
-                       icon="el-icon-edit">Edit
-            </el-button>
-            <el-button type="success" @click="addPresentation()" v-if="isInEditMode">Save</el-button>
-            <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation">Cancel
-            </el-button>
+                       icon="el-icon-edit">Edit</el-button>
+            <el-button type="success" @click="addPresentation()" v-if="isInEditMode"> Save</el-button>
+            <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation"
+                       icon="el-icon-close">Cancel</el-button>
             <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
-                       icon="el-icon-delete" @click="open">Delete
-            </el-button>
+                       icon="el-icon-delete" @click="open">Delete</el-button>
         </el-form-item>
     </el-form>
 </template>

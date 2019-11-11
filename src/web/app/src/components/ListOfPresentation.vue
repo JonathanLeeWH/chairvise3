@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h4>Presentations created by me</h4>
+    <h4>Presentations</h4>
     <el-menu :default-active="$route.path" v-loading="isLoading" router>
       <li key="__NEW__">
         <el-menu-item :index="'/analyze/__NEW__'">
           <i class="el-icon-edit-outline"></i>
           <span slot="title">
-          New
+          Create new presentation
         </span>
         </el-menu-item>
       </li>
