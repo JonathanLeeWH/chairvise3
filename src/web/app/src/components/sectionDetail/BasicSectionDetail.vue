@@ -345,7 +345,7 @@
 
       removeSelection(selection) {
         this.$confirm('This will permanently delete the selection. Are you sure?', 'Deleting Selection', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'
@@ -370,7 +370,7 @@
 
       removeJoiner(joiner) {
         this.$confirm('This will permanently delete the joiner. Are you sure?', 'Deleting Joiner', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'
@@ -396,7 +396,7 @@
 
       removeFilter(filter) {
         this.$confirm('This will permanently delete the filter. Are you sure?', 'Deleting Filter', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'
@@ -421,7 +421,7 @@
 
       removeSorter(sorter) {
         this.$confirm('This will permanently delete the sorter. Are you sure?', 'Deleting Sorter', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'
@@ -470,7 +470,7 @@
 
       deleteSectionDetail() {
         this.$confirm('This will permanently delete the section. Are you sure?', 'Deleting Section', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'

@@ -180,7 +180,7 @@
       deletePresentation(name) {
         this.$confirm('This will permanently delete the presentation "' + name + '". Are you sure?',
             'Deleting Presentation', {
-          confirmButtonText: 'OK',
+          confirmButtonText: 'Yes',
           cancelButtonText: 'Cancel',
           roundButton: true,
           type: 'warning'
