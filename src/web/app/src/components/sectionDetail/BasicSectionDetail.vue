@@ -5,8 +5,7 @@
       <div class="title" v-if="!isEditing">
         {{ sectionDetail.title }}
         <el-button type="primary" plain @click="changeEditMode(true)" v-if="isPresentationEditable">Edit</el-button>
-        <el-button type="danger" icon="el-icon-delete" circle @click="deleteSectionDetail"
-                   v-if="isPresentationEditable"></el-button>
+        <el-button type="danger" icon="el-icon-delete" circle v-if="isPresentationEditable" @click="open"></el-button>
       </div>
       <div class="title" v-else>
         <el-input v-model="editForm.title"></el-input>
@@ -454,6 +453,23 @@
               extraData: this.sectionDetail.extraData
             });
           })
+      },
+
+      open() {
+        this.$confirm('This will permanently delete the section. Are you sure?', 'Deleting Section', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          roundButton: true,
+          type: 'warning'
+        }).then(() => {
+          this.deleteSectionDetail();
+          this.$message({
+            type: 'success',
+            message: 'Successfully deleted the section!'
+          });
+        }).catch(() => {
+          // Don't display any message
+        });
       },
     },
   }
