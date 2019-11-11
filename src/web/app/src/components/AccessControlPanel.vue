@@ -4,7 +4,7 @@
     <el-input
       :value="currentUrl"
       @focus="$event.target.select()">
-      <template slot="prepend">Any one with the link</template>
+      <template slot="prepend">Anyone with the link</template>
       <template slot="append">
         <el-select :value="publicAccessLevel" @change="modifyPublicAccessControl($event)" style="width: 150px">
           <el-option label="Cannot Access" value="OFF"></el-option>
@@ -53,7 +53,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addAccessControl()">Add</el-button>
+        <el-button type="success" @click="addAccessControl()">Add</el-button>
       </el-form-item>
     </el-form>
   </div>
