@@ -9,6 +9,30 @@
                         <el-button v-on:click="addRecordGroup">Add New Record Group</el-button>
                     </el-form-item>
                 </el-form>
+                <el-form :model="newRecordGroupForm" ref="recordGroupForm" class="recordUploaded" v-if="isReadyForAddRecord">
+                    <div class="upload-status">
+                        <label>Record Group Name: </label>
+                        <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
+                        <el-button v-on:click="updateRecordGroup">Update</el-button>
+                        <el-button v-on:click="deleteRecordGroup">Delete</el-button>
+                    </div>
+                    <div class="upload-status author-record">
+                        <label>Author Record: </label>
+                        <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status review-record">
+                        <label>Review Record: </label>
+                        <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status submission-record">
+                        <label>Submission Record: </label>
+                        <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <import-data/>
+                </el-form>
             </el-tab-pane>
             <el-tab-pane label="Select From Existing Record Group">
                 <el-form>
@@ -179,6 +203,7 @@
                 this.$store.commit('setAddRecordGroupSuccess', false);
                 this.$store.commit('setUpdateRecordGroupSuccess', false);
                 this.$store.commit('setDeleteRecordGroupSuccess', false);
+                this.$store.commit('clearRecordGroup');
             },
             readyForDisplayRecordUploaded: function () {
                 this.isReadyForDisplayRecordUploaded = true;
