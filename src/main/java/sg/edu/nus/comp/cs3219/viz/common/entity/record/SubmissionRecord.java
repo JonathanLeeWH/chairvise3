@@ -94,20 +94,16 @@ public class SubmissionRecord {
     @Column(name = "s_submission_abstract", columnDefinition = "TEXT")
     private String submissionAbstract;
 
+    // Record Group
+    @Column(name = "rg_id")
+    private Long recordGroupId;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDataSet() {
-        return dataSet;
-    }
-
-    public void setDataSet(String dataSet) {
-        this.dataSet = dataSet;
     }
 
     public String getSubmissionId() {
@@ -212,5 +208,21 @@ public class SubmissionRecord {
 
     public void setSubmissionAbstract(String submissionAbstract) {
         this.submissionAbstract = submissionAbstract;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 }

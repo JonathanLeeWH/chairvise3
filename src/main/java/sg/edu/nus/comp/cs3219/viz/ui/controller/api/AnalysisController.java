@@ -43,6 +43,8 @@ public class AnalysisController extends BaseRestController {
             .orElseThrow(() -> new PresentationNotFoundException(id));
         gateKeeper.verifyAccessForPresentation(presentation, AccessLevel.CAN_READ);
 
+        analysisRequest.setRecordGroupId(presentation.getRecordGroupId());
+
         List<Map<String, Object>> result = analysisLogic.analyse(analysisRequest);
         log.info("Analysis Result from query: " + result);
         // convert to map with key all in lower case
@@ -60,6 +62,8 @@ public class AnalysisController extends BaseRestController {
         Presentation presentation = presentationLogic.findById(id)
             .orElseThrow(() -> new PresentationNotFoundException(id));
         gateKeeper.verifyAccessForPresentation(presentation, AccessLevel.CAN_READ);
+
+        analysisRequest.setRecordGroupId(presentation.getRecordGroupId());
 
         List<Map<String, Object>> result = analysisLogic.analyseCoauthorship(analysisRequest);
         log.info("Analysis CoAuthor Result from query: " + result);

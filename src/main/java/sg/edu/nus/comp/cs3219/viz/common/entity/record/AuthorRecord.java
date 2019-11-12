@@ -63,20 +63,15 @@ public class AuthorRecord {
     @JsonProperty("isCorresponding")
     private String isCorresponding;
 
+    @Column(name = "rg_id")
+    private Long recordGroupId;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDataSet() {
-        return dataSet;
-    }
-
-    public void setDataSet(String dataSet) {
-        this.dataSet = dataSet;
     }
 
     public String getSubmissionId() {
@@ -149,5 +144,21 @@ public class AuthorRecord {
 
     public void setIsCorresponding(String isCorresponding) {
         this.isCorresponding = isCorresponding;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 }

@@ -29,6 +29,7 @@ public class PresentationLogic {
         Presentation newPresentation = new Presentation();
         newPresentation.setName(presentation.getName());
         newPresentation.setDescription(presentation.getDescription());
+        newPresentation.setRecordGroupId(presentation.getRecordGroupId());
         newPresentation.setCreatorIdentifier(userInfo.getUserEmail());
 
         return presentationRepository.save(newPresentation);
@@ -37,6 +38,7 @@ public class PresentationLogic {
     public Presentation updatePresentation(Presentation oldPresentation, Presentation newPresentation) {
         oldPresentation.setName(newPresentation.getName());
         oldPresentation.setDescription(newPresentation.getDescription());
+        oldPresentation.setRecordGroupId(newPresentation.getRecordGroupId());
         return presentationRepository.save(oldPresentation);
     }
 

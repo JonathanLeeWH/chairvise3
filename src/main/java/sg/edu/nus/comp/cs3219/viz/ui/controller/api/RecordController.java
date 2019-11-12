@@ -1,13 +1,14 @@
 package sg.edu.nus.comp.cs3219.viz.ui.controller.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import sg.edu.nus.comp.cs3219.viz.common.datatransfer.AccessLevel;
 import sg.edu.nus.comp.cs3219.viz.common.datatransfer.UserInfo;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.AuthorRecord;
+import sg.edu.nus.comp.cs3219.viz.common.entity.record.RecordGroup;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.ReviewRecord;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.SubmissionRecord;
+import sg.edu.nus.comp.cs3219.viz.common.exception.RecordGroupNotFoundException;
 import sg.edu.nus.comp.cs3219.viz.logic.GateKeeper;
 import sg.edu.nus.comp.cs3219.viz.logic.RecordLogic;
 
@@ -27,30 +28,110 @@ public class RecordController extends BaseRestController {
         this.recordLogic = recordLogic;
     }
 
-    @PostMapping("/record/author")
-    public ResponseEntity<?> importAuthorRecord(@RequestBody List<AuthorRecord> authorRecordList) throws URISyntaxException {
+    @PostMapping("/record/record_groups")
+    public RecordGroup addRecordGroup(@RequestBody RecordGroup recordGroup) throws URISyntaxException {
         UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistAuthorRecordForDataSet(userInfo.getUserEmail(), authorRecordList);
+        recordGroup.setDataSet(userInfo.getUserEmail());
+
+        RecordGroup newRecordGroup = this.recordLogic.saveForRecordGroup(recordGroup, userInfo);
+
+        return newRecordGroup;
+    }
+
+    @GetMapping("/record/record_groups/{recordGroupId}")
+    public RecordGroup getRecordGroup(@PathVariable Long recordGroupId) throws URISyntaxException {
+        gateKeeper.verifyLoginAccess();
+
+        RecordGroup recordGroup = this.recordLogic.findById(recordGroupId)
+                .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
+
+        return recordGroup;
+    }
+
+    @PutMapping("/record/record_groups/{id}")
+    public RecordGroup updateRecordGroup(@RequestBody RecordGroup newRecordGroup, @PathVariable Long id)
+                                                throws URISyntaxException {
+        gateKeeper.verifyLoginAccess();
+
+        RecordGroup oldRecordGroup = recordLogic.findById(id)
+                .orElseThrow(() -> new RecordGroupNotFoundException(id));
+
+        RecordGroup updatedRecordGroup = recordLogic.updateRecordGroup(oldRecordGroup, newRecordGroup);
+        return updatedRecordGroup;
+    }
+
+    @DeleteMapping("/record/record_groups/{recordGroupId}")
+    public ResponseEntity<?> removeRecordGroup(@PathVariable Long recordGroupId) throws URISyntaxException {
+        gateKeeper.verifyLoginAccess();
+
+        this.recordLogic.deleteRecordGroupById(recordGroupId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/record/record_groups")
+    public List<RecordGroup> all() {
+        UserInfo currentUser = gateKeeper.verifyLoginAccess();
+
+        return this.recordLogic.findAllForUser(currentUser);
+    }
+
+    @PostMapping("/record/author/{recordGroupId}")
+    public ResponseEntity<?> importAuthorRecord(@PathVariable Long recordGroupId,
+                                                @RequestBody List<AuthorRecord> authorRecordList)
+                                                throws URISyntaxException {
+        UserInfo userInfo = gateKeeper.verifyLoginAccess();
+
+        this.recordLogic.removeAndPersistAuthorRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), authorRecordList);
+
+        RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
+                .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
+
+        RecordGroup newRecordGroup = oldRecordGroup;
+        newRecordGroup.setAuthorRecordUploadStatus(true);
+
+        this.recordLogic.updateRecordGroup(oldRecordGroup, newRecordGroup);
 
         return ResponseEntity.created(new URI("/record/author")).build();
     }
 
-    @PostMapping("/record/review")
-    public ResponseEntity<?> importReviewRecord(@RequestBody List<ReviewRecord> reviewRecordList) throws URISyntaxException {
+    @PostMapping("/record/review/{recordGroupId}")
+    public ResponseEntity<?> importReviewRecord(@PathVariable Long recordGroupId,
+                                                @RequestBody List<ReviewRecord> reviewRecordList)
+                                                throws URISyntaxException {
         UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistReviewRecordForDataSet(userInfo.getUserEmail(), reviewRecordList);
+        this.recordLogic.removeAndPersistReviewRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), reviewRecordList);
+
+
+        RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
+                .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
+
+        RecordGroup newRecordGroup = oldRecordGroup;
+        newRecordGroup.setReviewRecordUploadStatus(true);
+
+        this.recordLogic.updateRecordGroup(oldRecordGroup, newRecordGroup);
 
         return ResponseEntity.created(new URI("/record/review")).build();
     }
 
-    @PostMapping("/record/submission")
-    public ResponseEntity<?> importSubmissionRecord(@RequestBody List<SubmissionRecord> submissionRecords) throws URISyntaxException {
+    @PostMapping("/record/submission/{recordGroupId}")
+    public ResponseEntity<?> importSubmissionRecord(@PathVariable Long recordGroupId,
+                                                    @RequestBody List<SubmissionRecord> submissionRecords)
+                                                    throws URISyntaxException {
         UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistSubmissionRecordForDataSet(userInfo.getUserEmail(), submissionRecords);
+        this.recordLogic.removeAndPersistSubmissionRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), submissionRecords);
 
-        return ResponseEntity.created(new URI("/record/review")).build();
+        RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
+                .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
+
+        RecordGroup newRecordGroup = oldRecordGroup;
+        newRecordGroup.setSubmissionRecordUploadStatus(true);
+
+        this.recordLogic.updateRecordGroup(oldRecordGroup, newRecordGroup);
+
+        return ResponseEntity.created(new URI("/record/submission")).build();
     }
 }

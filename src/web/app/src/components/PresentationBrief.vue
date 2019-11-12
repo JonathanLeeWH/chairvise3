@@ -22,6 +22,17 @@
       <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
       <el-input v-model="presentationFormDescription" v-if="isInEditMode"/>
     </el-form-item>
+    <el-form-item label="Record Group">
+      <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroup }}</div>
+      <el-select v-model="presentationFormRecordGroupId" placeholder="Record Groups" :prop="recordGroup">
+        <el-option v-for="recordGroup in recordGroups"
+                   :key="recordGroup.recordGroupName"
+                   :label="recordGroup.recordGroupName"
+                   :value="recordGroup.id">
+          {{ recordGroup.recordGroupName }}
+        </el-option>
+      </el-select>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="downloadPDF()" v-if="!isInEditMode && !isNewPresentation">Download as PDF
       </el-button>
@@ -66,10 +77,12 @@
       },
 
       presentationForm() {
+        this.$store.dispatch("getRecordGroupList");
         return {
           name: this.presentationFormName,
           creatorIdentifier: this.presentationFormCreatorIdentifier,
           description: this.presentationFormDescription,
+          recordGroup: this.presentationFormRecordGroupId
         }
       },
       presentationFormName: {
@@ -97,6 +110,20 @@
           })
         },
       },
+      presentationFormRecordGroupId: {
+        get: function () {
+          return this.$store.state.presentation.presentationForm.recordGroupId;
+        },
+        set: function (value) {
+          this.$store.commit('setPresentationFormField', {
+            field: 'recordGroupId',
+            value
+          })
+        }
+      },
+      recordGroups() {
+        return this.$store.state.recordGroup.recordGroupList;
+      },
       isNewPresentation() {
         return this.id === ID_NEW_PRESENTATION
       },
@@ -121,8 +148,12 @@
           name: [
             {required: true, message: 'Please enter presentation name', trigger: 'blur'},
             {min: 3, message: 'The length should be more than 3 character', trigger: 'blur'}
+          ],
+          recordGroup: [
+            {required: true, message: 'Please select a record group', trigger: 'blur'},
           ]
-        }
+        },
+        presentationRecordGroupId: ''
       }
     },
     methods: {
@@ -258,6 +289,10 @@
 <style scoped>
   .share_button_left_margin {
     margin-left: 10px;
+  }
+
+  .el-select {
+    width: 100%;
   }
 
   .errorMsg {

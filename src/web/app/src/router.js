@@ -41,7 +41,7 @@ export default new Router({
       meta: {
         title: 'Import Data Page'
       },
-      component: () => import(/* webpackChunkName: "importData" */ './views/ImportData.vue')
+      component: () => import(/* webpackChunkName: "importData" */ './views/SelectRecordGroup.vue')
     },
     {
       path: '/',

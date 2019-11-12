@@ -12,6 +12,8 @@ public class AnalysisRequest {
     @NotEmpty
     private String dataSet;
 
+    private Long recordGroupId;
+
     private List<PresentationSection.Selection> selections = new ArrayList<>();
 
     private Map<String, Object> extraData;
@@ -32,6 +34,14 @@ public class AnalysisRequest {
 
     public void setDataSet(String dataSet) {
         this.dataSet = dataSet;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 
     public Map<String, Object> getExtraData() {
