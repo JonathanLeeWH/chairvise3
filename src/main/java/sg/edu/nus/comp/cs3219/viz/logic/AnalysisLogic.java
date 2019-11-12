@@ -64,13 +64,13 @@ public class AnalysisLogic {
     }
 
     public List<Map<String, Object>> analyseCoauthorship(AnalysisRequest analysisRequest) {
-        String dataSet = analysisRequest.getDataSet();
+        Long recordGroupId = analysisRequest.getRecordGroupId();
         Map<String, Object> extraData = analysisRequest.getExtraData();
         String collabType = extraData.get("collabType").toString();
 
         Logger log = Logger.getLogger(RecordLogic.class.getSimpleName());
 
-        List<AuthorRecord> authorExisting = authorRecordRepository.findByDataSetEquals(dataSet);
+        List<AuthorRecord> authorExisting = authorRecordRepository.findByRecordGroupIdEquals(recordGroupId);
         if (authorExisting == null) {
             log.info("authorRepo is null");
             return null;
@@ -160,6 +160,11 @@ public class AnalysisLogic {
                 .map(t -> String.format("%s.data_set = '%s'", t.getName(), analysisRequest.getDataSet()))
                 .collect(Collectors.joining(" AND "));
 
+        String recordGroupFilter = analysisRequest.getInvolvedRecords().stream()
+                .filter(r -> !r.isCustomized())
+                .map(t -> String.format("%s.rg_id = '%s'", t.getName(), analysisRequest.getRecordGroupId()))
+                .collect(Collectors.joining(" AND "));
+
         String groupersStr = analysisRequest.getGroupers().stream()
                 .map(PresentationSection.Grouper::getField)
                 .collect(Collectors.joining(","));
@@ -174,6 +179,10 @@ public class AnalysisLogic {
             baseSQL += String.format(" WHERE %s", dataSetFilter);
         } else {
             baseSQL += " WHERE true";
+        }
+
+        if (!recordGroupFilter.isEmpty()) {
+            baseSQL += String.format(" AND %s", recordGroupFilter);
         }
 
         if (!joinersStr.isEmpty()) {

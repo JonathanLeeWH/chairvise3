@@ -14,6 +14,7 @@ export default {
       name: '',
       description: '',
       creatorIdentifier: '',
+      recordGroupId: '',
     },
     presentationFormStatus: {
       isLoading: false,
@@ -75,6 +76,7 @@ export default {
       state.presentationForm.name = '';
       state.presentationForm.description = '';
       state.presentationForm.creatorIdentifier = '';
+      state.presentationForm.recordGroupId = '';
       state.presentationFormStatus.isLoading = false;
       state.presentationFormStatus.isApiError = false;
       state.presentationFormStatus.apiErrorMsg = '';

@@ -22,6 +22,9 @@ public class SubmissionRecord {
     @Column(name = "s_id")
     private Long id;
 
+    // each record will be imported by each user, dataSet is used to distinguished records submitted by different user
+    private String dataSet;
+
     @Exportable(name = "Submission Id", nameInDB = "s_submission_id")
     @Column(name = "s_submission_id")
     private String submissionId;
@@ -205,6 +208,14 @@ public class SubmissionRecord {
 
     public void setSubmissionAbstract(String submissionAbstract) {
         this.submissionAbstract = submissionAbstract;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
     }
 
     public Long getRecordGroupId() {

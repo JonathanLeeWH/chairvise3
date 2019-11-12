@@ -22,6 +22,9 @@ public class SubmissionAuthorRecord {
     @Column(name = "s_author_name")
     private String name;
 
+    @Column(name = "data_set")
+    private String dataSet;
+
     @Column(name = "rg_id")
     private Long recordGroupId;
 
@@ -39,6 +42,14 @@ public class SubmissionAuthorRecord {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
     }
 
     public Long getRecordGroupId() {

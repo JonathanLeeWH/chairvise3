@@ -112,10 +112,13 @@
       },
       presentationFormRecordGroupId: {
         get: function () {
-          return this.presentationRecordGroupId;
+          return this.$store.state.presentation.presentationForm.recordGroupId;
         },
-        set: function (newValue) {
-          this.presentationRecordGroupId = newValue;
+        set: function (value) {
+          this.$store.commit('setPresentationFormField', {
+            field: 'recordGroupId',
+            value
+          })
         }
       },
       recordGroups() {

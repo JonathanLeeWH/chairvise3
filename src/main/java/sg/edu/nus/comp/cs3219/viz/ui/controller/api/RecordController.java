@@ -81,9 +81,9 @@ public class RecordController extends BaseRestController {
     public ResponseEntity<?> importAuthorRecord(@PathVariable Long recordGroupId,
                                                 @RequestBody List<AuthorRecord> authorRecordList)
                                                 throws URISyntaxException {
-        gateKeeper.verifyLoginAccess();
+        UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistAuthorRecordForRecordGroup(recordGroupId, authorRecordList);
+        this.recordLogic.removeAndPersistAuthorRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), authorRecordList);
 
         RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
                 .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));
@@ -100,9 +100,9 @@ public class RecordController extends BaseRestController {
     public ResponseEntity<?> importReviewRecord(@PathVariable Long recordGroupId,
                                                 @RequestBody List<ReviewRecord> reviewRecordList)
                                                 throws URISyntaxException {
-        gateKeeper.verifyLoginAccess();
+        UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistReviewRecordForRecordGroup(recordGroupId, reviewRecordList);
+        this.recordLogic.removeAndPersistReviewRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), reviewRecordList);
 
 
         RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
@@ -120,9 +120,9 @@ public class RecordController extends BaseRestController {
     public ResponseEntity<?> importSubmissionRecord(@PathVariable Long recordGroupId,
                                                     @RequestBody List<SubmissionRecord> submissionRecords)
                                                     throws URISyntaxException {
-        gateKeeper.verifyLoginAccess();
+        UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
-        this.recordLogic.removeAndPersistSubmissionRecordForRecordGroup(recordGroupId, submissionRecords);
+        this.recordLogic.removeAndPersistSubmissionRecordForRecordGroup(recordGroupId, userInfo.getUserEmail(), submissionRecords);
 
         RecordGroup oldRecordGroup = recordLogic.findById(recordGroupId)
                 .orElseThrow(() -> new RecordGroupNotFoundException(recordGroupId));

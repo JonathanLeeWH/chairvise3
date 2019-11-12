@@ -63,12 +63,13 @@ public class RecordLogic {
     }
 
     @Transactional
-    public void removeAndPersistAuthorRecordForRecordGroup(Long recordGroupId,
+    public void removeAndPersistAuthorRecordForRecordGroup(Long recordGroupId, String dataSet,
                                                        List<AuthorRecord> authorRecordList) {
         authorRecordRepository.deleteAllByRecordGroupIdEquals(recordGroupId);
         authorRecordRepository.saveAll(authorRecordList.stream().peek(r -> {
             // should not set ID when creating records
             r.setId(null);
+            r.setDataSet(dataSet);
             // set the recordGroupId
             r.setRecordGroupId(recordGroupId);
             // the other field can be arbitrary
@@ -76,11 +77,12 @@ public class RecordLogic {
     }
 
     @Transactional
-    public void removeAndPersistReviewRecordForRecordGroup(Long recordGroupId,
+    public void removeAndPersistReviewRecordForRecordGroup(Long recordGroupId, String dataSet,
                                                        List<ReviewRecord> reviewRecordList) {
         reviewRecordRepository.deleteAllByRecordGroupIdEquals(recordGroupId);
         reviewRecordRepository.saveAll(reviewRecordList.stream().peek(r -> {
             // should not set ID when creating records
+            r.setDataSet(dataSet);
             r.setId(null);
             // set the recordGroupId
             r.setRecordGroupId(recordGroupId);
@@ -89,7 +91,7 @@ public class RecordLogic {
     }
 
     @Transactional
-    public void removeAndPersistSubmissionRecordForRecordGroup(Long recordGroupId,
+    public void removeAndPersistSubmissionRecordForRecordGroup(Long recordGroupId, String dataSet,
                                                            List<SubmissionRecord> submissionRecordList) {
         submissionRecordRepository.deleteAllByRecordGroupIdEquals(recordGroupId);
         submissionAuthorRecordRepository.deleteAllByRecordGroupIdEquals(recordGroupId);
@@ -97,6 +99,7 @@ public class RecordLogic {
             // should not set ID when creating records
             s.setId(null);
             // set the recordGroupId
+            s.setDataSet(dataSet);
             s.setRecordGroupId(recordGroupId);
             // create many to many relationship for authors
             List<SubmissionAuthorRecord> submissionAuthorRecords = s.getAuthors().stream()
@@ -107,6 +110,7 @@ public class RecordLogic {
                         if (existing == null) {
                             existing = new SubmissionAuthorRecord();
                             existing.setName(authorName);
+                            existing.setDataSet(dataSet);
                             existing.setRecordGroupId(recordGroupId);
                             existing = submissionAuthorRecordRepository.save(existing);
                         }

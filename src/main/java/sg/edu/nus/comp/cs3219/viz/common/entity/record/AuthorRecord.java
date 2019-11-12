@@ -21,6 +21,9 @@ public class AuthorRecord {
     @Column(name = "a_id")
     private Long id;
 
+    // each record will be imported by each user, dataSet is used to distinguished records submitted by different user
+    private String dataSet;
+
     @Exportable(name = "Submission Id", nameInDB = "a_submission_id")
     @Column(name = "a_submission_id")
     private String submissionId;
@@ -141,6 +144,14 @@ public class AuthorRecord {
 
     public void setIsCorresponding(String isCorresponding) {
         this.isCorresponding = isCorresponding;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
     }
 
     public Long getRecordGroupId() {
