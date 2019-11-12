@@ -23,6 +23,7 @@
           <el-option label="Average" value="avg"></el-option>
           <el-option label="Median" value="median"></el-option>
           <el-option label="Standard Deviation" value="std"></el-option>
+          <el-option label="Variance" value="var"></el-option>
         </el-select>
       </el-form-item>
     </template>
@@ -30,7 +31,7 @@
 </template>
 
 <script>
-  import {max, mean, median, min, standardDeviation, sum} from 'simple-statistics'
+  import {max, mean, median, min, standardDeviation, sum, variance} from 'simple-statistics'
   import BasicSectionDetail from '@/components/sectionDetail/BasicSectionDetail.vue'
 
   export default {
@@ -103,6 +104,12 @@
               this.tableData.push({
                 type: 'Standard Deviation',
                 value: standardDeviation(data).toFixed(2),
+              });
+              break;
+            case 'var':
+              this.tableData.push({
+                type: 'Variance',
+                value: variance(data).toFixed(2),
               });
               break;
           }
