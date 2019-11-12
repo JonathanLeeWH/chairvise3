@@ -268,6 +268,11 @@
               .then(() => {
                 vm.$store.commit('setIsPresentationEditable', wasPresentationEditable);
                 vm.$store.commit('setPageLoadingStatus', false);
+                this.$message({
+                  type: 'success',
+                  message: 'Presentation has been successfully emailed to "' + this.$store.state.userInfo.userEmail
+                      + '"!'
+                });
               });
         });
       },
