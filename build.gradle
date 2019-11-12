@@ -56,6 +56,11 @@ dependencies {
     testCompile("com.google.appengine:appengine-api-stubs:1.9.+")
     testCompile("com.google.appengine:appengine-testing:1.9.+")
     testRuntime('com.h2database:h2')
+
+    // This is only for sending through SMTP using local appengine
+    // Local appengine does not allow sending of SMTP by default.
+    // Note: This can be commented out when in production as the appengine's JavaMail will be used.
+    compile("com.sun.mail:javax.mail")
 }
 
 appengine {

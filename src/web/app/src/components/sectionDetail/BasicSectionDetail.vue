@@ -4,7 +4,7 @@
              :rules="editFormRule">
       <div class="title" v-if="!isEditing">
         {{ sectionDetail.title }}
-        <el-button type="primary" plain @click="changeEditMode(true)" v-if="isPresentationEditable">Edit</el-button>
+        <el-button type="primary" plain @click="changeEditMode(true)" v-if="isPresentationEditableCoauthor">Edit</el-button>
         <el-button type="danger" icon="el-icon-delete" circle @click="deleteSectionDetail"
                    v-if="isPresentationEditable"></el-button>
       </div>
@@ -291,6 +291,12 @@
         return this.filtersFieldOptions;
       },
       isPresentationEditable() {
+        return this.$store.state.presentation.isPresentationEditable;
+      },
+      isPresentationEditableCoauthor() {
+        if(this.sectionDetail.extraData.hasOwnProperty('collabType')) {
+          return false;
+        }
         return this.$store.state.presentation.isPresentationEditable;
       }
     },

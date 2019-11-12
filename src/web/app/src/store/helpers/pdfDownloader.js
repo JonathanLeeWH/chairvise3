@@ -12,14 +12,25 @@ import {
 
 let doc, marginTop;
 
-export function download(presentationFormName) {
-  doc = new JavascriptPDF("p", "mm", "a4");
-  marginTop = PDF_CHART_MARGIN_TOP;
-  doc.setFontSize(TITLE_FONT_SIZE);
-  doc.text(TITLE_MARGIN_LEFT, TITLE_MARGIN_TOP, presentationFormName);
-
-  return createPDF(presentationFormName);
+function initialisePDF(presentationFormName) {
+    doc = new JavascriptPDF("p", "mm", "a4");
+    marginTop = PDF_CHART_MARGIN_TOP;
+    doc.setFontSize(TITLE_FONT_SIZE);
+    doc.text(TITLE_MARGIN_LEFT, TITLE_MARGIN_TOP, presentationFormName);
 }
+
+export function download(presentationFormName) {
+    initialisePDF(presentationFormName);
+
+    return createPDF(presentationFormName);
+}
+
+export function send(presentationFormName) {
+    initialisePDF(presentationFormName);
+
+    return createPDF(presentationFormName, true);
+}
+
 
 function getDescription() {
   return html2canvas(document.getElementById("presentation-description")).then(element => {
@@ -47,11 +58,19 @@ function getChart(chartElement, idx) {
   });
 }
 
-async function createPDF(pdfName) {
+async function createPDF(pdfName, sendMail=false) {
   await getDescription();
   let chartElements = document.getElementsByClassName("presentation-section");
   for (let i = 0; i < chartElements.length; i++) {
     await getChart(chartElements[i], i);
   }
-  doc.save(pdfName + ".pdf");
+  let fileName = pdfName + ".pdf";
+  if (sendMail) {
+      doc.setProperties({
+          title: fileName
+      });
+      return doc.output("blob");
+  } else {
+      doc.save(fileName);
+  }
 }

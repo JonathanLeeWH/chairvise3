@@ -159,6 +159,20 @@ export default {
         .finally(() => {
           commit('setPresentationFormLoading', false);
         })
-    }
+    },
+
+    async sendPresentation({commit}, {jsonMessage, pdfBlob}) {
+      commit('setPageLoadingStatus', true);
+      let formData = new FormData();
+      // console.log(jsonMessage);
+      formData.append("mail", JSON.stringify(jsonMessage));
+      // console.log(JSON.stringify(jsonMessage));
+      // console.log(formData.get("mail"));
+      formData.append("files", pdfBlob);
+      await axios.post(`/api/send-mail`, formData)
+          .finally(() => {
+            commit('setPageLoadingStatus', false);
+          })
+    },
   }
 };
