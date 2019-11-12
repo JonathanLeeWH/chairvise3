@@ -30,9 +30,9 @@ export default {
             apiErrorMsg: '',
         },
         isRecordGroupEditable: false,
-        isDeleteSuccess: false,
-        isAddSuccess: false,
-        isUpdateSuccess: false
+        isDeleteRecordGroupSuccess: false,
+        isAddRecordGroupSuccess: false,
+        isUpdateRecordGroupSuccess: false
     },
     mutations: {
         setRecordGroupListLoading(state, payload) {
@@ -106,9 +106,17 @@ export default {
             state.isRecordGroupEditable = isRecordGroupEditable;
         },
 
+        setAddRecordGroupSuccess(state, success) {
+            state.isAddRecordGroupSuccess = success;
+        },
+
+        setUpdateRecordGroupSuccess(state, success) {
+            state.isUpdateRecordGroupSuccess = success;
+        },
+
         setDeleteRecordGroupSuccess(state, success) {
-            state.isDeleteSuccess = success;
-        }
+            state.isDeleteRecordGroupSuccess = success;
+        },
 
     },
     actions: {

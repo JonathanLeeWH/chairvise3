@@ -9,30 +9,6 @@
                         <el-button v-on:click="addRecordGroup">Add New Record Group</el-button>
                     </el-form-item>
                 </el-form>
-                <el-form :model="recordGroupForm" ref="recordGroupForm" class="recordUploaded" v-if="isReadyForAddRecord">
-                    <div class="upload-status">
-                        <label>Record Group Name: </label>
-                        <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
-                        <el-button v-on:click="updateRecordGroup">Update</el-button>
-                        <el-button v-on:click="deleteRecordGroup">Delete</el-button>
-                    </div>
-                    <div class="upload-status author-record">
-                        <label>Author Record: </label>
-                        <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
-                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                    </div>
-                    <div class="upload-status review-record">
-                        <label>Review Record: </label>
-                        <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
-                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                    </div>
-                    <div class="upload-status submission-record">
-                        <label>Submission Record: </label>
-                        <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
-                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                    </div>
-                    <import-data/>
-                </el-form>
             </el-tab-pane>
             <el-tab-pane label="Select From Existing Record Group">
                 <el-form>
@@ -75,11 +51,29 @@
         </el-tabs>
         <el-dialog
                 title="Success"
+                :visible.sync="isAddSuccess"
+                width="30%" center>
+            <span>You have successfully added the record group!</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" v-on:click="closeSuccess">Confirm</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog
+                title="Success"
+                :visible.sync="isUpdateSuccess"
+                width="30%" center>
+            <span>You have successfully updated the record group!</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" v-on:click="closeSuccess">Confirm</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog
+                title="Success"
                 :visible.sync="isDeleteSuccess"
                 width="30%" center>
             <span>You have successfully delete the record group!</span>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" v-on:click="closeSuccess">Sure</el-button>
+                <el-button type="primary" v-on:click="closeSuccess">Confirm</el-button>
             </span>
         </el-dialog>
     </div>
@@ -101,7 +95,6 @@
                         {min: 3, message: 'The length should be more than 3 character', trigger: 'blur'}
                     ],
                 },
-                isDeleteSuccess: false,
             }
         },
         computed: {
@@ -170,9 +163,23 @@
                         value
                     })
                 },
-            }
+            },
+            isAddSuccess: function () {
+                return this.$store.state.recordGroup.isAddRecordGroupSuccess;
+            },
+            isUpdateSuccess: function () {
+                return this.$store.state.recordGroup.isUpdateRecordGroupSuccess;
+            },
+            isDeleteSuccess: function () {
+                return this.$store.state.recordGroup.isDeleteRecordGroupSuccess;
+            },
         },
         methods: {
+            closeSuccess: function () {
+                this.$store.commit('setAddRecordGroupSuccess', false);
+                this.$store.commit('setUpdateRecordGroupSuccess', false);
+                this.$store.commit('setDeleteRecordGroupSuccess', false);
+            },
             readyForDisplayRecordUploaded: function () {
                 this.isReadyForDisplayRecordUploaded = true;
                 this.isReadyForAddRecord = false;
@@ -195,6 +202,7 @@
                             this.isReadyForDisplayRecordUploaded = false;
                             this.$store.dispatch('getRecordGroupList');
                             this.$store.commit("setRecordGroup", this.$store.state.recordGroup.recordGroupForm.id);
+                            this.$store.commit('setAddRecordGroupSuccess', true);
                         });
                 });
             },
@@ -204,7 +212,7 @@
                         if (this.isError) {
                             return;
                         }
-                        this.isDeleteSuccess = true;
+                        this.$store.commit('setDeleteRecordGroupSuccess', true);
                     })
             },
             updateRecordGroup() {
@@ -220,6 +228,7 @@
                                 return
                             }
                             this.$store.dispatch('getRecordGroupList');
+                            this.$store.commit('setUpdateRecordGroupSuccess', true);
                         });
                 });
             },
