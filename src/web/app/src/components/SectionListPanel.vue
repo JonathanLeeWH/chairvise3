@@ -138,11 +138,16 @@
           });
           return;
         }
+
         this.$store.dispatch('addSectionDetail', {
           presentationId: this.presentationId,
           selectedNewSection: this.selectedNewSection,
           dataSet: this.$store.state.userInfo.userEmail,
         }).then(() => {
+          this.$message({
+            type: 'success',
+            message: 'Successfully added a new section!'
+          });
           this.selectedNewSection = '';
         })
       }
