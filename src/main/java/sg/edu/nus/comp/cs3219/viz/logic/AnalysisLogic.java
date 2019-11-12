@@ -15,8 +15,11 @@ import sg.edu.nus.comp.cs3219.viz.storage.repository.SubmissionRecordRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -77,58 +80,26 @@ public class AnalysisLogic {
             return null;
         }
 
-        List<SubmissionRecord> submissionExisting = submissionRecordRepository.findByDataSetEquals(dataSet);
-        if (submissionExisting == null) {
-            log.info("submissionRepo is null");
-            return null;
-        }
-
-        Map<String, AuthorRecord> authorRecordMap = new HashMap<String, AuthorRecord>();
+        Map<String, Integer> collaboration = new HashMap<String, Integer>();
+        Map<String, Set<String>> submissionIdToDataSetMap = new HashMap<String, Set<String>>();
 
         authorExisting.stream().forEach(a -> {
-            String firstName = a.getFirstName();
-            String lastName = a.getLastName();
-            String fullName = firstName + " " + lastName;
-            authorRecordMap.put(fullName, a);
-        });
+            String tempValue = "";
+            if (collabType.equals("country")) {
+                tempValue = a.getCountry();
+            } else if (collabType.equals("organization")) {
+                tempValue = a.getOrganisation();
+            }
 
-        Map<String, Integer> collaboration = new HashMap<String, Integer>();
+            String submissionId = a.getSubmissionId();
+            if(submissionIdToDataSetMap.containsKey(submissionId)) {
+                Set<String> currentSet = submissionIdToDataSetMap.get(submissionId);
 
-        submissionExisting.stream().forEach(s -> {
-            List<SubmissionAuthorRecord> authorNames = s.getAuthorSet();
-
-            if (authorNames != null && authorNames.size() > 1) {
-                for (int i = 0; i < authorNames.size() - 1; i++) {
-
-                    String authorNameOne = authorNames.get(i).getName();
-                    if (authorRecordMap.get(authorNameOne) == null) {
-                        continue;
-                    }
-                    String firstValue = "";
-
-                    if (collabType.equals("country")) {
-                        firstValue = authorRecordMap.get(authorNameOne).getCountry();
-                    } else if (collabType.equals("organization")) {
-                        firstValue = authorRecordMap.get(authorNameOne).getOrganisation();
-                    }
-
-                    int j = i + 1;
-                    for (; j < authorNames.size(); j++) {
-                        String authorNameTwo = authorNames.get(j).getName();
-                        if (authorRecordMap.get(authorNameTwo) == null) {
-                            continue;
-                        }
-
-                        String secondValue = "";
-                        if (collabType.equals("country")) {
-                            secondValue = authorRecordMap.get(authorNameTwo).getCountry();
-                        } else if (collabType.equals("organization")) {
-                            secondValue = authorRecordMap.get(authorNameTwo).getOrganisation();
-                        }
-
+                if(!currentSet.contains(tempValue)) {
+                    for(String s : currentSet) {
                         List<String> tempListForSort = new ArrayList<>();
-                        tempListForSort.add(firstValue);
-                        tempListForSort.add(secondValue);
+                        tempListForSort.add(s);
+                        tempListForSort.add(tempValue);
                         java.util.Collections.sort(tempListForSort);
 
                         String combinedValue = tempListForSort.get(0) + "-" + tempListForSort.get(1);
@@ -141,13 +112,23 @@ public class AnalysisLogic {
                             collaboration.put(combinedValue, 1);
                         }
                     }
+                    currentSet.add(tempValue);
                 }
+            } else {
+                Set<String> tempSet = new HashSet<String>();
+                tempSet.add(tempValue);
+                submissionIdToDataSetMap.put(submissionId, tempSet);
             }
         });
 
         List<Map<String, Object>> result = new ArrayList<>();
 
-        collaboration.forEach((key, num) -> {
+        Map<String, Integer> sortedByValue = collaboration.entrySet()
+            .stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        sortedByValue.forEach((key, num) -> {
             Map<String, Object> map = new HashMap<String, Object>() {{
                 put(collabType, key);
                 put("value", num);
