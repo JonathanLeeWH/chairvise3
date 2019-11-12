@@ -4,8 +4,8 @@
         <el-menu-item index="/analyze" :disabled="!isLogin">Analyze</el-menu-item>
         <el-menu-item index="/importData" :disabled="!isLogin">Import Data</el-menu-item>
         <el-menu-item index="/logout" v-if="isLogin" @click="logout" v-loading.fullscreen.lock="isFullscreenLoading"
-                      style="position:absolute;right:0">
-            <el-button type="danger" plain icon="el-icon-user-solid">Welcome, {{ userNickname }}</el-button>
+                      style="float:right">
+            <el-button type="danger" plain icon="el-icon-user-solid">Logout ({{ userNickname }})</el-button>
         </el-menu-item>
         <el-menu-item index="/login" v-if="!isLogin" :disabled="isApiError" @click="login"
                       v-loading.fullscreen.lock="isFullscreenLoading" style="position:absolute;right:0">

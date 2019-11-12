@@ -1,5 +1,9 @@
 <template>
   <div>
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
+      <el-breadcrumb-item>Analyze</el-breadcrumb-item>
+    </el-breadcrumb>
     <div>
       <el-container>
         <el-aside width="250px" v-if="isLogin">
