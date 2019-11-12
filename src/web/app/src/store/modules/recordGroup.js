@@ -17,12 +17,22 @@ export default {
             reviewRecordUploadStatus:false,
             submissionRecordUploadStatus:false
         },
+        newRecordGroupForm: {
+            recordGroupName: '',
+            dataset:'',
+            authorRecordUploadStatus:false,
+            reviewRecordUploadStatus:false,
+            submissionRecordUploadStatus:false
+        },
         recordGroupFormStatus: {
             isLoading: false,
             isApiError: false,
             apiErrorMsg: '',
         },
-        isRecordGroupEditable: false
+        isRecordGroupEditable: false,
+        isDeleteSuccess: false,
+        isAddSuccess: false,
+        isUpdateSuccess: false
     },
     mutations: {
         setRecordGroupListLoading(state, payload) {
@@ -88,9 +98,18 @@ export default {
             state.recordGroupForm[field] = value
         },
 
+        setNewRecordGroupFormField(state, {field, value}) {
+            state.newRecordGroupForm[field] = value
+        },
+
         setIsRecordGroupEditable(state, isRecordGroupEditable) {
             state.isRecordGroupEditable = isRecordGroupEditable;
+        },
+
+        setDeleteRecordGroupSuccess(state, success) {
+            state.isDeleteSuccess = success;
         }
+
     },
     actions: {
         async getRecordGroupList({commit}) {
@@ -123,7 +142,7 @@ export default {
 
         async saveRecordGroup({commit, state}) {
             commit('setRecordGroupFormLoading', true);
-            await axios.post('/api/record/record_groups', state.recordGroupForm)
+            await axios.post('/api/record/record_groups', state.newRecordGroupForm)
                 .then(response => {
                     commit('addToRecordGroupList', deepCopy(response.data));
                     commit('setRecordGroupForm', deepCopy(response.data))
@@ -155,7 +174,8 @@ export default {
             await axios.delete('/api/record/record_groups/' + payload)
                 .then(() => {
                     commit('deleteFromRecordGroupList', payload);
-                    commit('resetRecordGroupForm')
+                    commit('resetRecordGroupForm');
+                    commit('setDeleteRecordGroupSuccess', true);
                 })
                 .catch(e => {
                     commit('setRecordGroupFormApiError', e.toString());
@@ -163,6 +183,6 @@ export default {
                 .finally(() => {
                     commit('setRecordGroupFormLoading', false);
                 })
-        }
+        },
     }
 };

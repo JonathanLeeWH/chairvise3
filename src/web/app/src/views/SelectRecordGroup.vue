@@ -2,11 +2,36 @@
     <div v-if="isLogin">
         <el-tabs type="border-card">
             <el-tab-pane label="Add New Record Group">
-                <el-form ref="recordGroupForm">
+                <el-form :model="newRecordGroupForm" ref="newRecordGroupForm" :rules="rules">
+                    <el-alert v-if="isError" :title="apiErrorMsg" type="error" show-icon class="errorMsg"/>
                     <el-form-item>
-                        <el-input placeholder="Record Group Name" v-model="recordGroupName"></el-input>
+                        <el-input placeholder="Record Group Name" v-model="newRecordGroupFormName" :prop="'name'"></el-input>
                         <el-button v-on:click="addRecordGroup">Add New Record Group</el-button>
                     </el-form-item>
+                </el-form>
+                <el-form :model="recordGroupForm" ref="recordGroupForm" class="recordUploaded" v-if="isReadyForAddRecord">
+                    <div class="upload-status">
+                        <label>Record Group Name: </label>
+                        <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
+                        <el-button v-on:click="updateRecordGroup">Update</el-button>
+                        <el-button v-on:click="deleteRecordGroup">Delete</el-button>
+                    </div>
+                    <div class="upload-status author-record">
+                        <label>Author Record: </label>
+                        <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status review-record">
+                        <label>Review Record: </label>
+                        <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status submission-record">
+                        <label>Submission Record: </label>
+                        <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <import-data/>
                 </el-form>
             </el-tab-pane>
             <el-tab-pane label="Select From Existing Record Group">
@@ -22,43 +47,61 @@
                         <el-button v-on:click="readyForDisplayRecordUploaded">Select</el-button>
                     </el-form-item>
                 </el-form>
+                <el-form ref="recordGroupForm" class="recordUploaded" v-if="isReadyForDisplayRecordUploaded">
+                    <div class="upload-status">
+                        <label>Record Group Name: </label>
+                        <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
+                        <el-button v-on:click="updateRecordGroup">Update</el-button>
+                        <el-button v-on:click="deleteRecordGroup">Delete</el-button>
+                    </div>
+                    <div class="upload-status author-record">
+                        <label>Author Record: </label>
+                        <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status review-record">
+                        <label>Review Record: </label>
+                        <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <div class="upload-status submission-record">
+                        <label>Submission Record: </label>
+                        <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
+                        <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                    </div>
+                    <import-data/>
+                </el-form>
             </el-tab-pane>
         </el-tabs>
-        <el-card id="recordUploaded" v-if="isReadyForDisplayRecordUploaded">
-            <div class="upload-status">
-                <label>Record Group Name: </label>
-                <el-input>{{ recordGroupName }}</el-input>
-                <el-button>Update</el-button>
-            </div>
-            <div class="upload-status" id="author-record">
-                <label>Author Record: </label>
-                <span v-if="isAuthorRecordUploaded">Already Uploaded</span>
-                <span v-else>Not Uploaded Yet</span>
-            </div>
-            <div class="upload-status" id="review-record">
-                <label>Review Record: </label>
-                <span v-if="isReviewRecordUploaded">Already Uploaded</span>
-                <span v-else>Not Uploaded Yet</span>
-            </div>
-            <div class="upload-status" id="submission-record">
-                <label>Submission Record: </label>
-                <span v-if="isSubmissionRecordUploaded">Already Uploaded</span>
-                <span v-else>Not Uploaded Yet</span>
-            </div>
-            <import-data/>
-        </el-card>
+        <el-dialog
+                title="Success"
+                :visible.sync="isDeleteSuccess"
+                width="30%" center>
+            <span>You have successfully delete the record group!</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" v-on:click="closeSuccess">Sure</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import ImportData from "@/components/ImportData.vue";
-    import {ID_NEW_RECORDGROUP} from "../common/const";
     export default {
         name: "SelectRecordGroup",
         data() {
             return {
                 recordGroupName: '',
-                isReadyForDisplayRecordUploaded: false
+                isReadyForDisplayRecordUploaded: false,
+                isReadyForAddRecord: false,
+                selectedRecordGroupId: '',
+                rules: {
+                    name: [
+                        {required: true, message: 'Please enter record group name', trigger: 'blur'},
+                        {min: 3, message: 'The length should be more than 3 character', trigger: 'blur'}
+                    ],
+                },
+                isDeleteSuccess: false,
             }
         },
         computed: {
@@ -71,55 +114,116 @@
             recordGroups() {
                 return this.$store.state.recordGroup.recordGroupList;
             },
+            recordGroupForm() {
+                return {
+                    name: this.recordGroupFormName,
+                    authorRecordUploadStatus: this.$store.state.recordGroup.recordGroupForm.authorRecordUploadStatus,
+                    reviewRecordUploadStatus: this.$store.state.recordGroup.recordGroupForm.reviewRecordUploadStatus,
+                    submissionRecordUploadStatus:
+                        this.$store.state.recordGroup.recordGroupForm.submissionRecordUploadStatus
+                }
+            },
+            recordGroupId: {
+                get: function () {
+                    return this.selectedRecordGroupId;
+                },
+                set: function (newValue) {
+                    this.selectedRecordGroupId = newValue;
+                    this.isReadyForDisplayRecordUploaded = false;
+                }
+            },
+            recordGroupFormName: {
+                get() {
+                    return this.$store.state.recordGroup.recordGroupForm.recordGroupName
+                },
+                set(value) {
+                    this.$store.commit('setRecordGroupFormField', {
+                        field: 'name',
+                        value
+                    })
+                },
+            },
+            isAuthorRecordUploaded() {
+                return this.$store.state.recordGroup.recordGroupForm.authorRecordUploadStatus
+            },
+            isReviewRecordUploaded() {
+                return this.$store.state.recordGroup.recordGroupForm.reviewRecordUploadStatus
+            },
+            isSubmissionRecordUploaded() {
+                return this.$store.state.recordGroup.recordGroupForm.submissionRecordUploadStatus
+            },
+            newRecordGroupForm() {
+                return {
+                    name: this.newRecordGroupFormName,
+                    authorRecordUploadStatus:false,
+                    reviewRecordUploadStatus:false,
+                    submissionRecordUploadStatus:false
+                }
+            },
+            newRecordGroupFormName: {
+                get() {
+                    return this.$store.state.recordGroup.newRecordGroupForm.recordGroupName
+                },
+                set(value) {
+                    this.$store.commit('setNewRecordGroupFormField', {
+                        field: 'recordGroupName',
+                        value
+                    })
+                },
+            }
         },
         methods: {
             readyForDisplayRecordUploaded: function () {
                 this.isReadyForDisplayRecordUploaded = true;
-                this.$store.dispatch('getRecordList');
+                this.isReadyForAddRecord = false;
+                this.$store.dispatch('getRecordGroup', this.selectedRecordGroupId);
+                this.$store.commit("setRecordGroup", this.selectedRecordGroupId);
             },
             addRecordGroup() {
-                this.$refs['recordGroupForm'].validate((valid) => {
+                this.$refs['newRecordGroupForm'].validate((valid) => {
                     if (!valid) {
                         return;
                     }
-                    this.$refs['recordGroupForm'].clearValidate();
+                    this.$refs['newRecordGroupForm'].clearValidate();
                     // add
                     this.$store.dispatch('saveRecordGroup')
                         .then(() => {
                             if (this.isError) {
                                 return
                             }
-                            // redirect to the newly added recordGroup
-                            this.$router.push({
-                                name: 'importData',
-                                params: {
-                                    id: this.$store.state.recordGroup.recordGroupForm.id
-                                }
-                            });
+                            this.isReadyForAddRecord = true;
+                            this.isReadyForDisplayRecordUploaded = false;
+                            this.$store.dispatch('getRecordGroupList');
+                            this.$store.commit("setRecordGroup", this.$store.state.recordGroup.recordGroupForm.id);
                         });
                 });
             },
             deleteRecordGroup() {
-                this.$store.dispatch('deleteRecordGroup', this.id)
+                this.$store.dispatch('deleteRecordGroup', this.selectedRecordGroupId)
                     .then(() => {
                         if (this.isError) {
-                            return
+                            return;
                         }
-                        this.$router.replace({
-                            name: 'importData',
-                            params: {
-                                id: ID_NEW_RECORDGROUP
-                            }
-                        });
-                        this.isEditing = false;
+                        this.isDeleteSuccess = true;
                     })
             },
-            updateRecordGroupForm() {
-                if (this.$refs['recordGroupForm']) {
+            updateRecordGroup() {
+                this.$refs['recordGroupForm'].validate((valid) => {
+                    if (!valid) {
+                        return;
+                    }
                     this.$refs['recordGroupForm'].clearValidate();
-                }
-                this.$store.commit('resetRecordGroupForm');
+                    // add
+                    this.$store.dispatch('updateRecordGroup')
+                        .then(() => {
+                            if (this.isError) {
+                                return
+                            }
+                            this.$store.dispatch('getRecordGroupList');
+                        });
+                });
             },
+
         },
         components: {
             ImportData
@@ -131,16 +235,19 @@
 </script>
 
 <style scoped>
-     .el-button {
+    .el-button {
          margin-top: 20px;
-     }
+    }
     .el-select {
         width: 100%;
     }
+    .uploaded {
+        color: #28a745;
+    }
+    .not-uploaded {
+        color: #dc3545;
+    }
     .upload-status{
         padding: 10px 0;
-    }
-    #recordUploaded{
-        padding: 20px 0;
     }
 </style>

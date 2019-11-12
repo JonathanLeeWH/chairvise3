@@ -29,14 +29,14 @@ public class RecordController extends BaseRestController {
     }
 
     @PostMapping("/record/record_groups")
-    public ResponseEntity<?> addRecordGroup(@RequestBody RecordGroup recordGroup) throws URISyntaxException {
+    public RecordGroup addRecordGroup(@RequestBody RecordGroup recordGroup) throws URISyntaxException {
         UserInfo userInfo = gateKeeper.verifyLoginAccess();
 
         recordGroup.setDataSet(userInfo.getUserEmail());
 
         RecordGroup newRecordGroup = this.recordLogic.saveForRecordGroup(recordGroup, userInfo);
 
-        return ResponseEntity.created(new URI("/record/record_group/" + newRecordGroup.getId())).build();
+        return newRecordGroup;
     }
 
     @GetMapping("/record/record_groups/{recordGroupId}")
@@ -50,7 +50,7 @@ public class RecordController extends BaseRestController {
     }
 
     @PutMapping("/record/record_groups/{id}")
-    public ResponseEntity<?> updateRecordGroup(@RequestBody RecordGroup newRecordGroup, @PathVariable Long id)
+    public RecordGroup updateRecordGroup(@RequestBody RecordGroup newRecordGroup, @PathVariable Long id)
                                                 throws URISyntaxException {
         gateKeeper.verifyLoginAccess();
 
@@ -58,14 +58,11 @@ public class RecordController extends BaseRestController {
                 .orElseThrow(() -> new RecordGroupNotFoundException(id));
 
         RecordGroup updatedRecordGroup = recordLogic.updateRecordGroup(oldRecordGroup, newRecordGroup);
-        return ResponseEntity
-                .created(new URI("/record/record_groups/" + updatedRecordGroup.getId()))
-                .body(updatedRecordGroup);
+        return updatedRecordGroup;
     }
 
     @DeleteMapping("/record/record_groups/{recordGroupId}")
-    public ResponseEntity<?> removeRecordGroup(@PathVariable Long recordGroupId,
-                                               @RequestBody String recordGroupName) throws URISyntaxException {
+    public ResponseEntity<?> removeRecordGroup(@PathVariable Long recordGroupId) throws URISyntaxException {
         gateKeeper.verifyLoginAccess();
 
         this.recordLogic.deleteRecordGroupById(recordGroupId);

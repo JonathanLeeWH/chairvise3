@@ -10,6 +10,7 @@ export default {
     hasHeaderSpecified: false,
     hasPredefinedSpecified: false,
     hasMappingFinished: false,
+    hasRecordGroupSpecified: false,
     isUploadSuccess: false,
     data: {
       dbSchema: null,
@@ -22,6 +23,7 @@ export default {
       hasHeader: null,
       predefinedMapping: null,
       predefinedMappingId: null,
+      recordGroupId: ''
     },
     error: []
   },
@@ -51,6 +53,16 @@ export default {
     clearDBSchema(state) {
       state.data.dbSchema = [];
       state.hasDBSchemaSet = false;
+    },
+
+    setRecordGroup(state, selected) {
+      state.data.recordGroupId = selected;
+      state.hasRecordGroupSpecified = true;
+    },
+
+    clearRecordGroup(state) {
+      state.data.recordGroupId = null;
+      state.hasRecordGroupSpecified = false;
     },
 
     setFormatType(state, formatType) {
@@ -143,7 +155,7 @@ export default {
           endpoint = "submission";
           break;
       }
-      await axios.post("/api/record/" + endpoint, state.data.processedResult)
+      await axios.post("/api/record/" + endpoint + "/" + state.data.recordGroupId, state.data.processedResult)
         .then(() => {
           commit("setPageLoadingStatus", false);
           commit("setUploadSuccess", true);

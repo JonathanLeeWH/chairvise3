@@ -20,7 +20,7 @@ export default {
       isApiError: false,
       apiErrorMsg: '',
     },
-    isPresentationEditable: false
+    isPresentationEditable: false,
   },
   mutations: {
     setPresentationListLoading(state, payload) {
@@ -86,7 +86,7 @@ export default {
 
     setIsPresentationEditable(state, isPresentationEditable) {
       state.isPresentationEditable = isPresentationEditable;
-    }
+    },
   },
   actions: {
     async getPresentationList({commit}) {

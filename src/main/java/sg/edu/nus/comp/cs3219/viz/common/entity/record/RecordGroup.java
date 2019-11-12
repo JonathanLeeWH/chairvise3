@@ -81,7 +81,7 @@ public class RecordGroup {
     }
 
     public boolean getSubmissionRecordUploadStatus() {
-        return isAuthorRecordUploaded;
+        return isSubmissionRecordUploaded;
     }
 
     public void setSubmissionRecordUploadStatus(boolean isSubmissionRecordUploaded) {

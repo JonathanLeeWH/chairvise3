@@ -127,7 +127,8 @@
         return this.$store.state.dataMapping.hasFormatTypeSpecified
          && this.$store.state.dataMapping.hasTableTypeSelected
          && this.$store.state.dataMapping.hasHeaderSpecified
-         && this.$store.state.dataMapping.hasPredefinedSpecified;
+         && this.$store.state.dataMapping.hasPredefinedSpecified
+         && this.$store.state.dataMapping.hasRecordGroupSpecified;
       }
     },
     methods: {
