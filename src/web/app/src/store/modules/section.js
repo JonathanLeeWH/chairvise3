@@ -201,25 +201,49 @@ export default {
       let sectionToAnalysis = findSectionDetailById(state.sectionList, id);
       commit('setSectionDetailLoading', {id: sectionToAnalysis.id, isLoading: true});
 
-      await axios.post(`/api/presentations/${presentationId}/analysis`, {
-        dataSet: sectionToAnalysis.dataSet,
-        selections: sectionToAnalysis.selections,
-        involvedRecords: sectionToAnalysis.involvedRecords,
-        filters: sectionToAnalysis.filters,
-        joiners: sectionToAnalysis.joiners,
-        groupers: sectionToAnalysis.groupers,
-        sorters: sectionToAnalysis.sorters
-      })
-        .then(response => {
-          commit('updateSectionAnalysisResult', {id: sectionToAnalysis.id, result: response.data});
+      if (sectionToAnalysis.extraData.hasOwnProperty('collabType')) {
+        await axios.post(`/api/presentations/${presentationId}/analysis/coauthor`, {
+          dataSet: sectionToAnalysis.dataSet,
+          selections: sectionToAnalysis.selections,
+          involvedRecords: sectionToAnalysis.involvedRecords,
+          filters: sectionToAnalysis.filters,
+          joiners: sectionToAnalysis.joiners,
+          groupers: sectionToAnalysis.groupers,
+          sorters: sectionToAnalysis.sorters,
+          extraData: sectionToAnalysis.extraData
         })
-        .catch(e => {
-          commit('setSectionDetailApiError',
-            {id: sectionToAnalysis.id, msg: e.toString(), msgDetail: JSON.stringify(e.response)});
+          .then(response => {
+            commit('updateSectionAnalysisResult', {id: sectionToAnalysis.id, result: response.data});
+          })
+          .catch(e => {
+            commit('setSectionDetailApiError',
+              {id: sectionToAnalysis.id, msg: e.toString(), msgDetail: JSON.stringify(e.response)});
+          })
+          .finally(() => {
+            commit('setSectionDetailLoading', {id: sectionToAnalysis.id, isLoading: false});
+          })
+      } else {
+        await axios.post(`/api/presentations/${presentationId}/analysis`, {
+          dataSet: sectionToAnalysis.dataSet,
+          selections: sectionToAnalysis.selections,
+          involvedRecords: sectionToAnalysis.involvedRecords,
+          filters: sectionToAnalysis.filters,
+          joiners: sectionToAnalysis.joiners,
+          groupers: sectionToAnalysis.groupers,
+          sorters: sectionToAnalysis.sorters,
+          extraData: sectionToAnalysis.extraData
         })
-        .finally(() => {
-          commit('setSectionDetailLoading', {id: sectionToAnalysis.id, isLoading: false});
-        })
+          .then(response => {
+            commit('updateSectionAnalysisResult', {id: sectionToAnalysis.id, result: response.data});
+          })
+          .catch(e => {
+            commit('setSectionDetailApiError',
+              {id: sectionToAnalysis.id, msg: e.toString(), msgDetail: JSON.stringify(e.response)});
+          })
+          .finally(() => {
+            commit('setSectionDetailLoading', {id: sectionToAnalysis.id, isLoading: false});
+          })
+      }
     }
   }
 }
