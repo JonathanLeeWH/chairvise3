@@ -52,7 +52,6 @@
   import {download} from "@/store/helpers/pdfDownloader"
   import {AccessLevel, ID_NEW_PRESENTATION, SPECIAL_IDENTIFIER_PUBLIC} from "@/common/const";
   import {deepCopy} from "@/common/utility";
-  import RecordGroupList from "@/store/modules/recordGroup"
 
   export default {
     name: 'PresentationBrief',

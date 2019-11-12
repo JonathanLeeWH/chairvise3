@@ -23,7 +23,7 @@
                         <el-button v-on:click="readyForDisplayRecordUploaded">Select</el-button>
                     </el-form-item>
                 </el-form>
-                <el-form ref="recordGroupForm" class="recordUploaded" v-if="isReadyForDisplayRecordUploaded">
+                <el-form :model="newRecordGroupForm" ref="recordGroupForm" class="recordUploaded" v-if="isReadyForDisplayRecordUploaded">
                     <div class="upload-status">
                         <label>Record Group Name: </label>
                         <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
@@ -131,7 +131,7 @@
                 },
                 set(value) {
                     this.$store.commit('setRecordGroupFormField', {
-                        field: 'name',
+                        field: 'recordGroupName',
                         value
                     })
                 },
