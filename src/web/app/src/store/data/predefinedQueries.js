@@ -43,6 +43,56 @@ export default {
       }
     }
   },
+  "top10_country_collaboration": {
+    name: "Top 10 Country Collaboration",
+    group: 'Co-Authorship',
+    data: {
+      type: 'bar_chart',
+      title: 'Top 10 Country Collaboration',
+      dataSet: '${PLACEHOLDER_DATA_SET}',
+      description: 'This bar chart shows the the top ten collaboration papers between countries',
+      selections: [],
+      involvedRecords: [],
+      filters: [],
+      joiners: [],
+      groupers: [],
+      sorters: [],
+      extraData: {
+        collabType: 'country',
+        dataSetLabel: 'No Of Collaboration',
+        fieldsShownInToolTips: [],
+        xAxisFieldName: 'country',
+        yAxisFieldName: 'value',
+        numOfResultToDisplay: 10,
+        isColorfulBar: true,
+      }
+    }
+  },
+  "top10_organization_collaboration": {
+    name: "Top 10 Organization Collaboration",
+    group: 'Co-Authorship',
+    data: {
+      type: 'bar_chart',
+      title: 'Top 10 Organization Collaboration',
+      dataSet: '${PLACEHOLDER_DATA_SET}',
+      description: 'This bar chart shows the the top ten collaboration papers between organizations',
+      selections: [],
+      involvedRecords: [],
+      filters: [],
+      joiners: [],
+      groupers: [],
+      sorters: [],
+      extraData: {
+        collabType: 'organization',
+        dataSetLabel: 'No Of Collaboration',
+        fieldsShownInToolTips: [{label: 'No', field: 'value'}],
+        xAxisFieldName: 'organization',
+        yAxisFieldName: 'value',
+        numOfResultToDisplay: 10,
+        isColorfulBar: true,
+      }
+    }
+  },
   "word_cloud_keywords_all_submission": {
     name: "Word Cloud for All Submissions Keywords",
     group: 'Submission Record',
