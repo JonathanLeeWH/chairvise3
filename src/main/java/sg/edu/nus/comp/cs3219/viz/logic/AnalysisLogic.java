@@ -7,7 +7,6 @@ import sg.edu.nus.comp.cs3219.viz.common.entity.PresentationSection;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.AuthorRecord;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.Exportable;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.ReviewRecord;
-import sg.edu.nus.comp.cs3219.viz.common.entity.record.SubmissionAuthorRecord;
 import sg.edu.nus.comp.cs3219.viz.common.entity.record.SubmissionRecord;
 import sg.edu.nus.comp.cs3219.viz.storage.repository.AuthorRecordRepository;
 import sg.edu.nus.comp.cs3219.viz.storage.repository.SubmissionRecordRepository;
@@ -50,14 +49,11 @@ public class AnalysisLogic {
 
     private AuthorRecordRepository authorRecordRepository;
 
-    private SubmissionRecordRepository submissionRecordRepository;
-
     public AnalysisLogic(JdbcTemplate jdbcTemplate,
                          AuthorRecordRepository authorRecordRepository,
                          SubmissionRecordRepository submissionRecordRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.authorRecordRepository = authorRecordRepository;
-        this.submissionRecordRepository = submissionRecordRepository;
     }
 
     public List<Map<String, Object>> analyse(AnalysisRequest analysisRequest) {
