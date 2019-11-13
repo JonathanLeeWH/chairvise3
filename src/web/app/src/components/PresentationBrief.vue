@@ -126,7 +126,8 @@
         },
         set: function (value) {
           this.$store.commit('setPresentationFormField', {
-            field: 'recordGroupId', value
+            field: 'recordGroupId',
+            value
           })
         }
       },
