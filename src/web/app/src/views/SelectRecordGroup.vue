@@ -46,7 +46,7 @@
                         <el-form-item>
                             <el-select v-model="recordGroupId" placeholder="Record Groups">
                                 <el-option v-for="recordGroup in recordGroups"
-                                           :key="recordGroup.id"
+                                           :key="recordGroup.recordGroupName"
                                            :label="recordGroup.recordGroupName"
                                            :value="recordGroup.id">
                                 </el-option>
@@ -221,10 +221,7 @@
                       confirmButtonText: 'OK',
                       roundButton: true,
                       type: 'success',
-                      showCancelButton: false,
-                      closeOnClickModal: false,
-                      closeOnPressEscape: false,
-                      showClose: false
+                      showCancelButton: false
                     }).then(() => {
                   this.closeSuccess();
                 })
@@ -249,6 +246,8 @@
                   type: 'success',
                   message: 'Successfully deleted the record group!'
                 });
+
+                this.selectedRecordGroupId = '';
               })
         });
       },
@@ -271,11 +270,7 @@
                     'Updated Record Group', {
                       confirmButtonText: 'OK',
                       roundButton: true,
-                      type: 'success',
-                      showCancelButton: false,
-                      closeOnClickModal: false,
-                      closeOnPressEscape: false,
-                      showClose: false
+                      type: 'success'
                     }).then(() => {
                   this.closeSuccess();
                 });
