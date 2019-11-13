@@ -70,6 +70,7 @@
       id: String
     },
     mounted() {
+      this.$store.dispatch("getRecordGroupList");
       this.updatePresentationForm()
     },
     watch: {
@@ -86,7 +87,6 @@
       },
 
       presentationForm() {
-        this.$store.dispatch("getRecordGroupList");
         return {
           name: this.presentationFormName,
           creatorIdentifier: this.presentationFormCreatorIdentifier,
