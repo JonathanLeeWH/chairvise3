@@ -72,7 +72,7 @@ public class RecordGroup {
         this.isAuthorRecordUploaded = isAuthorRecordUploaded;
     }
 
-    public boolean getReviewRecordUploadedStatus() {
+    public boolean getReviewRecordUploadStatus() {
         return isReviewRecordUploaded;
     }
 
