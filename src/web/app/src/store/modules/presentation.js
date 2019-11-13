@@ -15,6 +15,7 @@ export default {
       description: '',
       creatorIdentifier: '',
       recordGroupId: '',
+      recordGroupName: '',
     },
     presentationFormStatus: {
       isLoading: false,

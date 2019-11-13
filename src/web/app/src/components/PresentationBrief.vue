@@ -23,7 +23,7 @@
       <el-input v-model="presentationFormDescription" v-if="isInEditMode"/>
     </el-form-item>
     <el-form-item label="Record Group">
-      <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroup }}</div>
+      <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroupName }}</div>
       <el-select v-model="presentationFormRecordGroupId" placeholder="Record Groups" :prop="recordGroup">
         <el-option v-for="recordGroup in recordGroups"
                    :key="recordGroup.recordGroupName"
@@ -82,7 +82,8 @@
           name: this.presentationFormName,
           creatorIdentifier: this.presentationFormCreatorIdentifier,
           description: this.presentationFormDescription,
-          recordGroup: this.presentationFormRecordGroupId
+          recordGroup: this.presentationFormRecordGroupId,
+          recordGroupName: this.presentationFormRecordGroupName,
         }
       },
       presentationFormName: {
@@ -117,6 +118,17 @@
         set: function (value) {
           this.$store.commit('setPresentationFormField', {
             field: 'recordGroupId',
+            value
+          })
+        }
+      },
+      presentationFormRecordGroupName: {
+        get: function () {
+          return this.$store.state.presentation.presentationForm.recordGroupName;
+        },
+        set: function (value) {
+          this.$store.commit('setPresentationFormField', {
+            field: 'recordGroupName',
             value
           })
         }
