@@ -193,6 +193,14 @@
         this.$store.commit('clearRecordGroup');
       },
       readyForDisplayRecordUploaded: function () {
+        if (this.selectedRecordGroupId === '') {
+          this.$message({
+            type: 'error',
+            message: 'Please select a record group.'
+          });
+          return;
+        }
+
         this.isReadyForDisplayRecordUploaded = true;
         this.isReadyForAddRecord = false;
         this.$store.dispatch('getRecordGroup', this.selectedRecordGroupId);
@@ -241,6 +249,7 @@
                   return;
                 }
 
+                this.isReadyForDisplayRecordUploaded = false;
                 this.$store.commit('setDeleteRecordGroupSuccess', true);
                 this.$message({
                   type: 'success',
