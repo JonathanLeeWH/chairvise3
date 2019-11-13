@@ -309,6 +309,12 @@
       },
       isPresentationEditable() {
         return this.$store.state.presentation.isPresentationEditable;
+      },
+      isPresentationEditableCoauthor() {
+        if (this.sectionDetail.extraData.hasOwnProperty('collabType')) {
+          return false;
+        }
+        return this.$store.state.presentation.isPresentationEditable;
       }
     },
 
@@ -454,13 +460,13 @@
               sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
               extraData: this.editForm.extraData
             }).then(() => {
-                  // only update when there is no error in saving
-                  if (this.sectionDetail.status.isApiError) {
-                    return
-                  }
-                  this.isEditing = false;
-                  this.sendAnalysisRequest();
-                });
+              // only update when there is no error in saving
+              if (this.sectionDetail.status.isApiError) {
+                return
+              }
+              this.isEditing = false;
+              this.sendAnalysisRequest();
+            });
             return true;
           } else {
             return false;
@@ -505,17 +511,17 @@
             groupers: this.editForm.groupers.map(g => ({field: g})),
             sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
           }).then(() => {
-                this.$emit('update-visualisation', {
-                  selections: this.editForm.selections,
-                  involvedRecords: this.editFormInvolvedRecords,
-                  filters: this.editForm.filters.map(f => Object.assign({}, f)),
-                  joiners: this.editForm.joiners.map(j => Object.assign({}, j)),
-                  groupers: this.editForm.groupers.map(g => ({field: g})),
-                  sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
-                  result: this.sectionDetail.previewResult,
-                  extraData: this.editForm.extraData
-                });
-              })
+            this.$emit('update-visualisation', {
+              selections: this.editForm.selections,
+              involvedRecords: this.editFormInvolvedRecords,
+              filters: this.editForm.filters.map(f => Object.assign({}, f)),
+              joiners: this.editForm.joiners.map(j => Object.assign({}, j)),
+              groupers: this.editForm.groupers.map(g => ({field: g})),
+              sorters: this.editForm.sorters.map(s => Object.assign({}, s)),
+              result: this.sectionDetail.previewResult,
+              extraData: this.editForm.extraData
+            });
+          })
         });
       },
 

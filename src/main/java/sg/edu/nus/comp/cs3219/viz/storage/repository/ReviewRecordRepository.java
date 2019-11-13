@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ReviewRecordRepository extends JpaRepository<ReviewRecord, Long> {
 
-    List<ReviewRecord> findByDataSetEquals(String dataSet);
+    List<ReviewRecord> findByRecordGroupIdEquals(Long recordGroupId);
 
-    void deleteAllByDataSetEquals(String dataSet);
+    void deleteAllByRecordGroupIdEquals(Long recordGroupId);
 }

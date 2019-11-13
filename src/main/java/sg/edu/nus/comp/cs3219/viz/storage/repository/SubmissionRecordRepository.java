@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SubmissionRecordRepository extends JpaRepository<SubmissionRecord, Long> {
 
-    List<SubmissionRecord> findByDataSetEquals(String dataSet);
+    List<SubmissionRecord> findByRecordGroupIdEquals(Long recordGroupId);
 
-    void deleteAllByDataSetEquals(String dataSet);
+    void deleteAllByRecordGroupIdEquals(Long recordGroupId);
 }

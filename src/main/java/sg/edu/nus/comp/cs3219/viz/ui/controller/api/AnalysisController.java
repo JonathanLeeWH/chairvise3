@@ -40,8 +40,10 @@ public class AnalysisController extends BaseRestController {
     public List<Map<String, Object>> analysis(@PathVariable Long id, @Valid @RequestBody AnalysisRequest analysisRequest) {
         // verify access level
         Presentation presentation = presentationLogic.findById(id)
-                .orElseThrow(() -> new PresentationNotFoundException(id));
+            .orElseThrow(() -> new PresentationNotFoundException(id));
         gateKeeper.verifyAccessForPresentation(presentation, AccessLevel.CAN_READ);
+
+        analysisRequest.setRecordGroupId(presentation.getRecordGroupId());
 
         List<Map<String, Object>> result = analysisLogic.analyse(analysisRequest);
         log.info("Analysis Result from query: " + result);
@@ -51,6 +53,21 @@ public class AnalysisController extends BaseRestController {
             m.forEach((k, v) -> map.put(k.toLowerCase(), v));
             return map;
         }).collect(Collectors.toList());
+    }
+
+    @PostMapping("/presentations/{id}/analysis/coauthor")
+    public List<Map<String, Object>> analysisCoauthor(@PathVariable Long id,
+                                               @Valid @RequestBody AnalysisRequest analysisRequest) {
+        // verify access level
+        Presentation presentation = presentationLogic.findById(id)
+            .orElseThrow(() -> new PresentationNotFoundException(id));
+        gateKeeper.verifyAccessForPresentation(presentation, AccessLevel.CAN_READ);
+
+        analysisRequest.setRecordGroupId(presentation.getRecordGroupId());
+
+        List<Map<String, Object>> result = analysisLogic.analyseCoauthorship(analysisRequest);
+        log.info("Analysis CoAuthor Result from query: " + result);
+        return result;
     }
 
 }

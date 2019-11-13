@@ -5,15 +5,19 @@ import sg.edu.nus.comp.cs3219.viz.common.entity.PresentationSection;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AnalysisRequest {
 
     @NotEmpty
     private String dataSet;
 
+    private Long recordGroupId;
+
     private List<PresentationSection.Selection> selections = new ArrayList<>();
 
-    @NotEmpty
+    private Map<String, Object> extraData;
+
     private List<PresentationSection.Record> involvedRecords = new ArrayList<>();
 
     private List<PresentationSection.Filter> filters = new ArrayList<>();
@@ -30,6 +34,22 @@ public class AnalysisRequest {
 
     public void setDataSet(String dataSet) {
         this.dataSet = dataSet;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
+    }
+
+    public Map<String, Object> getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(Map<String, Object> extraData) {
+        this.extraData = extraData;
     }
 
     public List<PresentationSection.Selection> getSelections() {
@@ -79,4 +99,5 @@ public class AnalysisRequest {
     public void setSorters(List<PresentationSection.Sorter> sorters) {
         this.sorters = sorters;
     }
+
 }

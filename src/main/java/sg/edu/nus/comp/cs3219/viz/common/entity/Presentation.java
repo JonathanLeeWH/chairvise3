@@ -23,6 +23,8 @@ public class Presentation {
 
     private String creatorIdentifier;
 
+    private Long recordGroupId;
+
     public Long getId() {
         return id;
     }
@@ -53,5 +55,13 @@ public class Presentation {
 
     public void setCreatorIdentifier(String creatorIdentifier) {
         this.creatorIdentifier = creatorIdentifier;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 }

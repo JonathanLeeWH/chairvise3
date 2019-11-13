@@ -14,13 +14,14 @@ export default {
       name: '',
       description: '',
       creatorIdentifier: '',
+      recordGroupId: '',
     },
     presentationFormStatus: {
       isLoading: false,
       isApiError: false,
       apiErrorMsg: '',
     },
-    isPresentationEditable: false
+    isPresentationEditable: false,
   },
   mutations: {
     setPresentationListLoading(state, payload) {
@@ -75,6 +76,7 @@ export default {
       state.presentationForm.name = '';
       state.presentationForm.description = '';
       state.presentationForm.creatorIdentifier = '';
+      state.presentationForm.recordGroupId = '';
       state.presentationFormStatus.isLoading = false;
       state.presentationFormStatus.isApiError = false;
       state.presentationFormStatus.apiErrorMsg = '';
@@ -86,7 +88,7 @@ export default {
 
     setIsPresentationEditable(state, isPresentationEditable) {
       state.isPresentationEditable = isPresentationEditable;
-    }
+    },
   },
   actions: {
     async getPresentationList({commit}) {

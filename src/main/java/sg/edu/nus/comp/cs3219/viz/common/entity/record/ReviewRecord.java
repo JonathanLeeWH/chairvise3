@@ -69,20 +69,15 @@ public class ReviewRecord {
     @Column(name = "r_has_recommended_for_best_paper")
     private String hasRecommendedForBestPaper;
 
+    @Column(name = "rg_id")
+    private Long recordGroupId;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDataSet() {
-        return dataSet;
-    }
-
-    public void setDataSet(String dataSet) {
-        this.dataSet = dataSet;
     }
 
     public String getSubmissionId() {
@@ -163,5 +158,21 @@ public class ReviewRecord {
 
     public void setHasRecommendedForBestPaper(String hasRecommendedForBestPaper) {
         this.hasRecommendedForBestPaper = hasRecommendedForBestPaper;
+    }
+
+    public String getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(String dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public Long getRecordGroupId() {
+        return recordGroupId;
+    }
+
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 }

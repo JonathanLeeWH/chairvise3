@@ -19,10 +19,14 @@ public class SubmissionAuthorRecord {
     @Column(name = "s_author_id")
     private Long id;
 
-    private String dataSet;
-
     @Column(name = "s_author_name")
     private String name;
+
+    @Column(name = "data_set")
+    private String dataSet;
+
+    @Column(name = "rg_id")
+    private Long recordGroupId;
 
     public Long getId() {
         return id;
@@ -30,6 +34,14 @@ public class SubmissionAuthorRecord {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDataSet() {
@@ -40,11 +52,11 @@ public class SubmissionAuthorRecord {
         this.dataSet = dataSet;
     }
 
-    public String getName() {
-        return name;
+    public Long getRecordGroupId() {
+        return recordGroupId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRecordGroupId(Long recordGroupId) {
+        this.recordGroupId = recordGroupId;
     }
 }

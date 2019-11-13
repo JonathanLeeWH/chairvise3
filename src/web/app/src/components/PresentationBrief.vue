@@ -1,7 +1,6 @@
 <template>
     <el-alert v-if="isNewPresentation && !isLogin" title="Please login to create new presentation" type="error"
-              show-icon
-              class="errorMsg" />
+              show-icon class="errorMsg" />
     <el-form v-else label-position="right" ref="presentationForm" label-width="120px" :rules="rules"
              :model="presentationForm" v-loading="isLoading">
         <el-alert v-if="isError" :title="apiErrorMsg" type="error" show-icon class="errorMsg" />
@@ -27,7 +26,7 @@
         <el-form-item>
             <el-dropdown @command="handleDownloadCommand" v-if="!isInEditMode && !isNewPresentation">
                 <el-button type="primary" style="margin-right: 10px">
-                    Download<i class="el-icon-arrow-down el-icon--right"></i>
+                    Export<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="pdf">PDF Document (.pdf)</el-dropdown-item>
@@ -35,12 +34,16 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="warning" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable"
-                       icon="el-icon-edit">Edit</el-button>
-            <el-button type="success" @click="addPresentation()" v-if="isInEditMode" icon="el-icon-check"> Save</el-button>
+                       icon="el-icon-edit">Edit
+            </el-button>
+            <el-button type="success" @click="addPresentation()" v-if="isInEditMode" icon="el-icon-check">Save
+            </el-button>
             <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation"
-                       icon="el-icon-close">Cancel</el-button>
+                       icon="el-icon-close">Cancel
+            </el-button>
             <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
-                       icon="el-icon-delete" @click="deletePresentation(presentationForm.name)">Delete</el-button>
+                       icon="el-icon-delete" @click="deletePresentation(presentationForm.name)">Delete
+            </el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -73,10 +76,12 @@
       },
 
       presentationForm() {
+        this.$store.dispatch("getRecordGroupList");
         return {
           name: this.presentationFormName,
           creatorIdentifier: this.presentationFormCreatorIdentifier,
           description: this.presentationFormDescription,
+          recordGroup: this.presentationFormRecordGroupId
         }
       },
       presentationFormName: {
@@ -104,6 +109,20 @@
           })
         },
       },
+      presentationFormRecordGroupId: {
+        get: function () {
+          return this.$store.state.presentation.presentationForm.recordGroupId;
+        },
+        set: function (value) {
+          this.$store.commit('setPresentationFormField', {
+            field: 'recordGroupId',
+            value
+          })
+        }
+      },
+      recordGroups() {
+        return this.$store.state.recordGroup.recordGroupList;
+      },
       isNewPresentation() {
         return this.id === ID_NEW_PRESENTATION
       },
@@ -128,8 +147,12 @@
           name: [
             {required: true, message: 'Please enter presentation name', trigger: 'blur'},
             {min: 3, message: 'The length should be more than 3 character', trigger: 'blur'}
+          ],
+          recordGroup: [
+            {required: true, message: 'Please select a record group', trigger: 'blur'},
           ]
-        }
+        },
+        presentationRecordGroupId: ''
       }
     },
     methods: {
@@ -180,11 +203,11 @@
       deletePresentation(name) {
         this.$confirm('This will permanently delete the presentation "' + name + '". Are you sure?',
             'Deleting Presentation', {
-          confirmButtonText: 'Yes',
-          cancelButtonText: 'Cancel',
-          roundButton: true,
-          type: 'warning'
-        }).then(() => {
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'Cancel',
+              roundButton: true,
+              type: 'warning'
+            }).then(() => {
           this.$store.dispatch('deletePresentation', this.id)
               .then(() => {
                 if (this.isError) {
