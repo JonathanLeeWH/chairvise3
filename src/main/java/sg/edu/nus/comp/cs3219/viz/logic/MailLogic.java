@@ -27,7 +27,7 @@ public class MailLogic {
     @Value("${smtpconfiguration.mail.mailaddress}")
     private String smtpMailAddress;
 
-    @Value("${spring.servlet.multipart.location=${java.io.tmpdir}}")
+    @Value("${spring.servlet.multipart.location}")
     private String multiPartLocation;
 
     private JavaMailCommons javaMailCommons;
