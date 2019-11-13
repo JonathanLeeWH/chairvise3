@@ -25,6 +25,8 @@ public class Presentation {
 
     private Long recordGroupId;
 
+    private String recordGroupName;
+
     public Long getId() {
         return id;
     }
@@ -63,5 +65,13 @@ public class Presentation {
 
     public void setRecordGroupId(Long recordGroupId) {
         this.recordGroupId = recordGroupId;
+    }
+
+    public String getRecordGroupName() {
+        return recordGroupName;
+    }
+
+    public void setRecordGroupName(String recordGroupName) {
+        this.recordGroupName = recordGroupName;
     }
 }
