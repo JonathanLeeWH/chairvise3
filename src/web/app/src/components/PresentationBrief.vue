@@ -22,7 +22,7 @@
             <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
             <el-input v-model="presentationFormDescription" v-if="isInEditMode" />
         </el-form-item>
-        <el-form-item label="Record Group" :prop="'recordGroup'">
+        <el-form-item label="Record Group" :prop=" isInEditMode ? 'recordGroup' : ''">
             <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroup }}</div>
             <el-select v-if="isInEditMode" v-model="presentationFormRecordGroupId" placeholder="Record Groups">
                 <el-option v-for="recordGroup in recordGroups"
