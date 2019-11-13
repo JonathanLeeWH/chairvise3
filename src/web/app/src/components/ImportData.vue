@@ -1,9 +1,5 @@
 <template>
     <div>
-        <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-            <el-breadcrumb-item>Importing data</el-breadcrumb-item>
-        </el-breadcrumb>
         <el-alert
             title="You need to login-in to view the page"
             type="error"
