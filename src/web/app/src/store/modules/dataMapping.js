@@ -159,6 +159,17 @@ export default {
         .then(() => {
           commit("setPageLoadingStatus", false);
           commit("setUploadSuccess", true);
+          switch (state.data.tableType) {
+            case 0:
+              commit("setAuthorRecordUploadSuccess");
+              break;
+            case 1:
+              commit("setReviewRecordUploadSuccess");
+              break;
+            case 2:
+              commit("setSubmissionRecordUploadSuccess");
+              break;
+          }
         })
         .catch(e => {
           commit("setPageLoadingStatus", false);

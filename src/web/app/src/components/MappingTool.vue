@@ -1,89 +1,70 @@
 <template>
-  <el-row :gutter="20" class="map-container">
-    <!-- left part of the page -->
-    <el-col :span="10" :offset="1" class="map-area">
-      <!-- db fields -->
-      <div class="db-tags">
-        <h3>Database fields</h3>
-        <transition-group name="tags-group" tag="div">
-          <div class="tag" v-for="(item, idx) in dbList.fieldMetaDataList"
-               v-bind:key="idx"
-               v-bind:class="[ idx === selectedDBTag ? 'active' : '', mappedDBTag.includes(idx) ? 'hidden' : '' ]"
-               v-on:click="dbTagClicked(idx)">
-            {{ item.name }}
-          </div>
-        </transition-group>
-      </div>
-      <!-- end of db fields -->
+    <el-row :gutter="20" class="map-container">
+        <!-- left part of the page -->
+        <el-col :span="10" :offset="1" class="map-area">
+            <!-- db fields -->
+            <div class="db-tags">
+                <h3>Database fields</h3>
+                <transition-group name="tags-group" tag="div">
+                    <div class="tag" v-for="(item, idx) in dbList.fieldMetaDataList"
+                         v-bind:key="idx"
+                         v-bind:class="[ idx === selectedDBTag ? 'active' : '', mappedDBTag.includes(idx) ? 'hidden' : '' ]"
+                         v-on:click="dbTagClicked(idx)">
+                        {{ item.name }}
+                    </div>
+                </transition-group>
+            </div>
+            <!-- end of db fields -->
 
-      <!-- imported tags -->
-      <div class="import-tags">
-        <h3>Imported data fields</h3>
-        <transition-group name="tags-group" tag="div">
-          <div class="tag" v-for="(item, idx) in importList"
-               v-bind:key="idx"
-               v-bind:class="[ idx === selectedImportTag ? 'active' : '', mappedImportTag.includes(idx) ? 'hidden' : '' ]"
-               v-on:click="importTagClicked(idx)">
-            {{ item }}
-          </div>
-        </transition-group>
-      </div>
-      <!-- end of imported tags -->
+            <!-- imported tags -->
+            <div class="import-tags">
+                <h3>Imported data fields</h3>
+                <transition-group name="tags-group" tag="div">
+                    <div class="tag" v-for="(item, idx) in importList"
+                         v-bind:key="idx"
+                         v-bind:class="[ idx === selectedImportTag ? 'active' : '', mappedImportTag.includes(idx) ? 'hidden' : '' ]"
+                         v-on:click="importTagClicked(idx)">
+                        {{ item }}
+                    </div>
+                </transition-group>
+            </div>
+            <!-- end of imported tags -->
 
-      <!-- button group -->
-      <el-row class="button-row">
-        <el-col>
-          <el-button class="back-button" type="info" v-on:click="backClicked">Back</el-button>
-          <el-button class="back-button" type="success" v-on:click="uploadClicked">Upload</el-button>
+            <!-- button group -->
+            <el-row class="button-row">
+                <el-col>
+                    <el-button class="back-button" type="info" v-on:click="backClicked" icon="el-icon-back">Back
+                    </el-button>
+                    <el-button class="back-button" type="success" v-on:click="uploadClicked" icon="el-icon-upload">
+                        Upload
+                    </el-button>
+                </el-col>
+            </el-row>
+            <!-- end of button group -->
         </el-col>
-      </el-row>
-      <!-- end of button group -->
-    </el-col>
-    <!-- end of left part of the page -->
+        <!-- end of left part of the page -->
 
-    <!-- right part of the page -->
-    <el-col :span="12" class="map-result">
-      <h3>Mapping</h3>
-      <transition-group name="map-group" tag="div">
-        <div class="pair-tag" v-for="(item, index) in mappedPairs" v-bind:key="index">
-          <el-tag size="medium">{{ dbList.fieldMetaDataList[item[0]].type }}</el-tag>
-          <p class="pair-info">
-            {{ dbList.fieldMetaDataList[item[0]].name }}
-            <i class="el-icon-caret-right"></i>
-            {{ importList[item[1]] }}
-          </p><i class="el-icon-close" v-on:click="removeMapClicked(index)"></i><br>
-        </div>
-      </transition-group>
-      <transition name="fade" mode="out-in">
-        <div class="no-map-info" v-show="mappedPairs.length === 0">
-          <p>No mapping specified!</p>
-        </div>
-      </transition>
-    </el-col>
-    <!-- end of right part of the page -->
-
-    <!-- dialogs -->
-    <el-dialog
-      title="Confirm"
-      :visible.sync="hasSubmitted"
-      width="30%" center>
-      <span>After submission, your will not be able to modify your mapping. Are you sure that the columns are correctly mapped?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button v-on:click="hasSubmitted = false">Cancel</el-button>
-        <el-button type="primary" v-on:click="submitMapping">Confirm</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="Success"
-      :visible.sync="uploadSuccess"
-      width="30%" center>
-      <span>You have successfully imported data using the column mapping!</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-on:click="closeSuccess">Sure</el-button>
-      </span>
-    </el-dialog>
-    <!-- end of dialogs -->
-  </el-row>
+        <!-- right part of the page -->
+        <el-col :span="12" class="map-result">
+            <h3>Mapping</h3>
+            <transition-group name="map-group" tag="div">
+                <div class="pair-tag" v-for="(item, index) in mappedPairs" v-bind:key="index">
+                    <el-tag size="medium">{{ dbList.fieldMetaDataList[item[0]].type }}</el-tag>
+                    <p class="pair-info">
+                        {{ dbList.fieldMetaDataList[item[0]].name }}
+                        <i class="el-icon-caret-right"></i>
+                        {{ importList[item[1]] }}
+                    </p><i class="el-icon-close" v-on:click="removeMapClicked(index)"></i><br>
+                </div>
+            </transition-group>
+            <transition name="fade" mode="out-in">
+                <div class="no-map-info" v-show="mappedPairs.length === 0">
+                    <p>No mapping specified!</p>
+                </div>
+            </transition>
+        </el-col>
+        <!-- end of right part of the page -->
+    </el-row>
 </template>
 
 <script>
@@ -100,11 +81,10 @@
         // ordered list of tags that have been
         // mapped with their data type details
         mappedDBTag: filterPredefinedMap(deepCopy(this.$store.state.dataMapping.data.predefinedMapping.dbTagIndices),
-          this.$store.state.dataMapping.data.dbSchema.fieldMetaDataList),
-        mappedImportTag: filterPredefinedMap(deepCopy(this.$store.state.dataMapping.data.predefinedMapping.importedTagIndices),
-          this.$store.state.dataMapping.data.uploadedLabel),
-
-        hasSubmitted: false,
+            this.$store.state.dataMapping.data.dbSchema.fieldMetaDataList),
+        mappedImportTag: filterPredefinedMap(
+            deepCopy(this.$store.state.dataMapping.data.predefinedMapping.importedTagIndices),
+            this.$store.state.dataMapping.data.uploadedLabel),
         tableType: ""
       };
     },
@@ -200,12 +180,39 @@
         let map = deepCopy(this.mappedPairs);
         this.$store.commit("setMapping", {"map": map});
         if (this.errors.length === 0) {
-          this.hasSubmitted = true;
+          this.$confirm('After submission, you will not be able to modify your mapping. ' +
+              'Are you sure that the columns are correctly mapped?', 'Uploading File', {
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel',
+            roundButton: true,
+            type: 'warning'
+          }).then(() => {
+            this.submitMapping();
+          })
         }
       },
       submitMapping: function () {
-        this.hasSubmitted = false;
-        this.$store.dispatch("persistMapping");
+        this.$store.dispatch("persistMapping").then(() => {
+          if (this.uploadSuccess) {
+            this.$confirm('You have successfully imported data using the column mapping!',
+                'File successfully uploaded!', {
+                  confirmButtonText: 'OK',
+                  roundButton: true,
+                  type: 'success',
+                  showCancelButton: false,
+                  closeOnClickModal: false,
+                  closeOnPressEscape: false,
+                  showClose: false
+                }).then(() => {
+              this.closeSuccess();
+            })
+          } else {
+            this.$message({
+              type: 'danger',
+              message: 'Failed to import data. Please try again.'
+            });
+          }
+        });
       },
       closeSuccess: function () {
         this.$store.commit("setUploadSuccess", false);
@@ -227,185 +234,185 @@
 </script>
 
 <style scoped>
-  @keyframes pulse {
-    from {
-      -webkit-transform: scale3d(1, 1, 1);
-      transform: scale3d(1, 1, 1);
+    @keyframes pulse {
+        from {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+
+        50% {
+            -webkit-transform: scale3d(1.1, 1.1, 1.1);
+            transform: scale3d(1.1, 1.1, 1.1);
+        }
+
+        to {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
     }
 
-    50% {
-      -webkit-transform: scale3d(1.1, 1.1, 1.1);
-      transform: scale3d(1.1, 1.1, 1.1);
+    .map-container h3 {
+        letter-spacing: 1px;
     }
 
-    to {
-      -webkit-transform: scale3d(1, 1, 1);
-      transform: scale3d(1, 1, 1);
+    .tags-group-move {
+        transition: all 300ms ease-in-out 50ms;
     }
-  }
 
-  .map-container h3 {
-    letter-spacing: 1px;
-  }
+    .map-group-move {
+        transition: all 600ms ease-in-out 50ms;
+    }
 
-  .tags-group-move {
-    transition: all 300ms ease-in-out 50ms;
-  }
+    /* appearing */
+    .map-group-enter-active {
+        transition: all 300ms ease-out;
+    }
 
-  .map-group-move {
-    transition: all 600ms ease-in-out 50ms;
-  }
+    /* disappearing */
+    .map-group-leave-active {
+        transition: all 200ms ease-in;
+    }
 
-  /* appearing */
-  .map-group-enter-active {
-    transition: all 300ms ease-out;
-  }
+    /* appear at / disappear to */
+    .map-group-enter {
+        opacity: 0;
+        transform: translateY(30px);
+    }
 
-  /* disappearing */
-  .map-group-leave-active {
-    transition: all 200ms ease-in;
-  }
+    .map-group-leave-to {
+        opacity: 0;
+    }
 
-  /* appear at / disappear to */
-  .map-group-enter {
-    opacity: 0;
-    transform: translateY(30px);
-  }
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.3s ease;
+    }
 
-  .map-group-leave-to {
-    opacity: 0;
-  }
+    .fade-enter, .fade-leave-to
+        /* .component-fade-leave-active below version 2.1.8 */
+    {
+        opacity: 0;
+    }
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.3s ease;
-  }
+    .map-container {
+        display: flex;
+        flex-direction: row;
+    }
 
-  .fade-enter, .fade-leave-to
-    /* .component-fade-leave-active below version 2.1.8 */
-  {
-    opacity: 0;
-  }
+    .db-tags {
+        min-height: 90px;
+    }
 
-  .map-container {
-    display: flex;
-    flex-direction: row;
-  }
+    .import-tags {
+        min-height: 90px;
+    }
 
-  .db-tags {
-    min-height: 90px;
-  }
+    .tag {
+        display: inline-block;
+        height: 20px;
+        margin: 5px 5px;
+        padding: 7px 14px;
+        background-color: #ffffff;
+        border: 1px solid #007bff;
+        color: #007bff;
+        font-size: 14px;
+        cursor: pointer;
+        opacity: 1;
+        z-index: 1;
+        transition: opacity 0.2s, transform 0.3s, background-color 0.2s;
+        border-radius: 5px;
+        max-width: 400px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        /* box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12); */
+    }
 
-  .import-tags {
-    min-height: 90px;
-  }
+    .tag.active {
+        animation: pulse 1s infinite;
+        background-color: #007bff;
+        color: #ffffff;
+        transition: 0.3s;
+    }
 
-  .tag {
-    display: inline-block;
-    height: 20px;
-    margin: 5px 5px;
-    padding: 7px 14px;
-    background-color: #ffffff;
-    border: 1px solid #007bff;
-    color: #007bff;
-    font-size: 14px;
-    cursor: pointer;
-    opacity: 1;
-    z-index: 1;
-    transition: opacity 0.2s, transform 0.3s, background-color 0.2s;
-    border-radius: 5px;
-    max-width: 400px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    /* box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12); */
-  }
+    .tag.hidden {
+        position: absolute;
+        opacity: 0;
+        z-index: -1;
+        transition: 0.2s;
+    }
 
-  .tag.active {
-    animation: pulse 1s infinite;
-    background-color: #007bff;
-    color: #ffffff;
-    transition: 0.3s;
-  }
+    .tag:hover {
+        background-color: #007bff;
+        color: #ffffff;
+        transition: 0.2s;
+    }
 
-  .tag.hidden {
-    position: absolute;
-    opacity: 0;
-    z-index: -1;
-    transition: 0.2s;
-  }
+    .map-result {
+        display: flex;
+        flex-direction: column;
+        /* border: 1px dashed #565656; */
+        border-radius: 5px;
+        min-height: 300px;
+        /* padding: 30px 10px; */
+        transition: all 0.3s ease;
+    }
 
-  .tag:hover {
-    background-color: #007bff;
-    color: #ffffff;
-    transition: 0.2s;
-  }
+    .pair-tag {
+        margin: 5px 5px;
+        padding: 15px 14px;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #eeeeee;
+        color: #565656;
+    }
 
-  .map-result {
-    display: flex;
-    flex-direction: column;
-    /* border: 1px dashed #565656; */
-    border-radius: 5px;
-    min-height: 300px;
-    /* padding: 30px 10px; */
-    transition: all 0.3s ease;
-  }
+    .pair-tag .pair-info {
+        margin-left: 10px;
+        transition: 1s ease;
+        font-size: 14px;
+        display: inline;
+    }
 
-  .pair-tag {
-    margin: 5px 5px;
-    padding: 15px 14px;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #eee;
-    color: #565656;
-  }
+    .pair-tag .el-icon-close {
+        margin-top: 4px;
+        cursor: pointer;
+        transition: 0.3s;
+        float: right;
+    }
 
-  .pair-tag .pair-info {
-    margin-left: 10px;
-    transition: 1s ease;
-    font-size: 14px;
-    display: inline;
-  }
+    .pair-tag .el-icon-caret-right {
+        position: relative;
+        top: 2px;
+    }
 
-  .pair-tag .el-icon-close {
-    margin-top: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-    float: right;
-  }
+    .pair-tag .el-icon-close:hover {
+        color: crimson;
+        transition: 0.3s;
+    }
 
-  .pair-tag .el-icon-caret-right {
-    position: relative;
-    top: 2px;
-  }
+    .no-map-info {
+        color: #777777;
+        font-weight: 300;
+        position: absolute;
+        top: 65px;
+        margin-left: 10px;
+    }
 
-  .pair-tag .el-icon-close:hover {
-    color: crimson;
-    transition: 0.3s;
-  }
+    .el-tag {
+        margin-left: 0;
+        padding: 0;
+        width: 70px;
+        text-align: center;
+        font-size: 9px;
+    }
 
-  .no-map-info {
-    color: #777;
-    font-weight: 300;
-    position: absolute;
-    top: 65px;
-    margin-left: 10px;
-  }
+    .el-input {
+        margin-left: 78px;
+        margin-top: 8px;
+        width: 185px;
+    }
 
-  .el-tag {
-    margin-left: 0;
-    padding: 0;
-    width: 70px;
-    text-align: center;
-    font-size: 9px;
-  }
-
-  .el-input {
-    margin-left: 78px;
-    margin-top: 8px;
-    width: 185px;
-  }
-
-  .button-row {
-    margin-top: 40px;
-  }
+    .button-row {
+        margin-top: 40px;
+    }
 </style>

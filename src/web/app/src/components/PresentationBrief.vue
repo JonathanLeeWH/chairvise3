@@ -1,52 +1,61 @@
 <template>
-  <el-alert v-if="isNewPresentation && !isLogin" title="Please login to create new presentation" type="error" show-icon
-            class="errorMsg"/>
-  <el-form v-else label-position="right" ref="presentationForm" label-width="120px" :rules="rules"
-           :model="presentationForm" v-loading="isLoading">
-    <el-alert v-if="isError" :title="apiErrorMsg" type="error" show-icon class="errorMsg"/>
-    <el-form-item label="Name" :prop=" isInEditMode ? 'name' : ''">
-      <div v-if="!isInEditMode">{{ presentationForm.name }}</div>
-      <el-input v-model="presentationFormName" v-if="isInEditMode"/>
-    </el-form-item>
-    <el-form-item label="Access Control" v-if="!isNewPresentation">
-      <el-tag>Created by {{ presentationForm.creatorIdentifier }}</el-tag>
-      <el-button type="success" size="small" class="share_button_left_margin" icon="el-icon-view"
-                 @click="openAccessControlPanel()" v-if="isLogin && isPresentationEditable">SHARE
-      </el-button>
-    </el-form-item>
-    <el-dialog title="Share with other users:" :visible.sync="isAccessControlDialogVisible" width="70%"
-               :close-on-click-modal="false">
-      <access-control-panel :presentationId="id"></access-control-panel>
-    </el-dialog>
-    <el-form-item label="Description">
-      <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
-      <el-input v-model="presentationFormDescription" v-if="isInEditMode"/>
-    </el-form-item>
-    <el-form-item label="Record Group">
-      <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroupName }}</div>
-      <el-select v-model="presentationFormRecordGroupId" placeholder="Record Groups" :prop="recordGroup">
-        <el-option v-for="recordGroup in recordGroups"
-                   :key="recordGroup.recordGroupName"
-                   :label="recordGroup.recordGroupName"
-                   :value="recordGroup.id">
-          {{ recordGroup.recordGroupName }}
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="downloadPDF()" v-if="!isInEditMode && !isNewPresentation">Download as PDF
-      </el-button>
-      <el-button type="primary" @click="sendPDF()" v-if="!isInEditMode && !isNewPresentation">Send PDF to Self
-      </el-button>
-      <el-button type="primary" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable">Edit
-      </el-button>
-      <el-button type="primary" @click="addPresentation()" v-if="isInEditMode">Save</el-button>
-      <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation">Cancel</el-button>
-      <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
-                 @click="deletePresentation()">Delete
-      </el-button>
-    </el-form-item>
-  </el-form>
+    <el-alert v-if="isNewPresentation && !isLogin" title="Please login to create new presentation" type="error"
+              show-icon class="errorMsg" />
+    <el-form v-else label-position="right" ref="presentationForm" label-width="120px" :rules="rules"
+             :model="presentationForm" v-loading="isLoading">
+        <el-alert v-if="isError" :title="apiErrorMsg" type="error" show-icon class="errorMsg" />
+        <el-form-item label="Name" :prop=" isInEditMode ? 'name' : ''">
+            <div v-if="!isInEditMode">{{ presentationForm.name }}</div>
+            <el-input v-model="presentationFormName" v-if="isInEditMode" />
+        </el-form-item>
+        <el-form-item label="Access Control" v-if="!isNewPresentation">
+            <el-tag>Created by {{ presentationForm.creatorIdentifier }}</el-tag>
+            <el-button type="success" size="small" class="share_button_left_margin" icon="el-icon-view"
+                       @click="openAccessControlPanel()" v-if="isLogin && isPresentationEditable">SHARE
+            </el-button>
+        </el-form-item>
+        <el-dialog title="Share with other users:" :visible.sync="isAccessControlDialogVisible" width="70%"
+                   :close-on-click-modal="false">
+            <access-control-panel :presentationId="id"></access-control-panel>
+        </el-dialog>
+        <el-form-item label="Description">
+            <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
+            <el-input v-model="presentationFormDescription" v-if="isInEditMode" />
+        </el-form-item>
+        <el-form-item label="Record Group" :prop="isInEditMode ? 'recordGroup' : ''">
+            <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroupName }}</div>
+            <el-select v-if="isInEditMode" v-model="presentationFormRecordGroupId"
+                       placeholder="Record Groups">
+                <el-option v-for="recordGroup in recordGroups"
+                           :key="recordGroup.recordGroupName"
+                           :label="recordGroup.recordGroupName"
+                           :value="recordGroup.id">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-dropdown @command="handleDownloadCommand" v-if="!isInEditMode && !isNewPresentation">
+                <el-button type="primary" style="margin-right: 10px">
+                    Export<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="pdf">PDF Document (.pdf)</el-dropdown-item>
+                    <el-dropdown-item command="email-self">Email as attachment</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-button type="warning" @click="changeEditMode(true)" v-if="!isInEditMode && isPresentationEditable"
+                       icon="el-icon-edit">Edit
+            </el-button>
+            <el-button type="success" @click="addPresentation()" v-if="isInEditMode" icon="el-icon-check">Save
+            </el-button>
+            <el-button type="info" @click="changeEditMode(false)" v-if="isInEditMode && !isNewPresentation"
+                       icon="el-icon-close">Cancel
+            </el-button>
+            <el-button type="danger" v-if="!isNewPresentation && isLogin && isPresentationEditable"
+                       icon="el-icon-delete" @click="deletePresentation(presentationForm.name)">Delete
+            </el-button>
+        </el-form-item>
+    </el-form>
 </template>
 
 <script>
@@ -61,6 +70,7 @@
       id: String
     },
     mounted() {
+      this.$store.dispatch("getRecordGroupList");
       this.updatePresentationForm()
     },
     watch: {
@@ -77,7 +87,6 @@
       },
 
       presentationForm() {
-        this.$store.dispatch("getRecordGroupList");
         return {
           name: this.presentationFormName,
           creatorIdentifier: this.presentationFormCreatorIdentifier,
@@ -128,8 +137,7 @@
         },
         set: function (value) {
           this.$store.commit('setPresentationFormField', {
-            field: 'recordGroupName',
-            value
+            field: 'recordGroupName', value
           })
         }
       },
@@ -189,65 +197,83 @@
           if (this.isNewPresentation) {
             // add
             this.$store.dispatch('savePresentation')
-              .then(() => {
-                if (this.isError) {
-                  return
-                }
-                // redirect to the newly added presentation
-                this.$router.push({
-                  name: 'analyze',
-                  params: {
-                    id: this.$store.state.presentation.presentationForm.id
+                .then(() => {
+                  if (this.isError) {
+                    return
                   }
+                  // redirect to the newly added presentation
+                  this.$router.push({
+                    name: 'analyze',
+                    params: {
+                      id: this.$store.state.presentation.presentationForm.id
+                    }
+                  });
                 });
-              });
           } else {
             // edit
             this.$store.dispatch('updatePresentation')
+                .then(() => {
+                  if (this.isError) {
+                    return
+                  }
+                  this.isEditing = false
+                })
+          }
+        });
+      },
+      deletePresentation(name) {
+        this.$confirm('This will permanently delete the presentation "' + name + '". Are you sure?',
+            'Deleting Presentation', {
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'Cancel',
+              roundButton: true,
+              type: 'warning'
+            }).then(() => {
+          this.$store.dispatch('deletePresentation', this.id)
               .then(() => {
                 if (this.isError) {
                   return
                 }
-                this.isEditing = false
-              })
-          }
+                this.$router.replace({
+                  name: 'analyze',
+                  params: {
+                    id: ID_NEW_PRESENTATION
+                  }
+                });
+                this.isEditing = false;
+              });
+          this.$message({
+            type: 'success',
+            message: 'Successfully deleted the presentation!'
+          });
+        }).catch(() => {
+          // Don't display any message
         });
-      },
-      deletePresentation() {
-        this.$store.dispatch('deletePresentation', this.id)
-          .then(() => {
-            if (this.isError) {
-              return
-            }
-            this.$router.replace({
-              name: 'analyze',
-              params: {
-                id: ID_NEW_PRESENTATION
-              }
-            });
-            this.isEditing = false;
-          })
       },
       updatePresentationForm() {
         if (this.$refs['presentationForm']) {
           this.$refs['presentationForm'].clearValidate();
         }
+
         this.$store.commit('resetPresentationForm');
         if (this.id !== ID_NEW_PRESENTATION) {
           this.$store.dispatch('getPresentation', this.id)
-            .then(() => {
-              // check writable or not
-              this.$store.dispatch('fetchAccessControlList', this.id)
-                .then(() => {
-                  let currentUser = this.$store.state.userInfo.userEmail;
-                  let accessControlList = this.$store.state.accessControl.accessControlList;
-                  let isPresentationEditable =
-                    currentUser === this.presentationFormCreatorIdentifier
-                    || accessControlList.some(acl => acl.userIdentifier === currentUser && acl.accessLevel === AccessLevel.CAN_WRITE)
-                    || accessControlList.some(acl => acl.userIdentifier === SPECIAL_IDENTIFIER_PUBLIC && acl.accessLevel === AccessLevel.CAN_WRITE);
-                  this.$store.commit('setIsPresentationEditable', isPresentationEditable)
-                })
-            })
+              .then(() => {
+                // check writable or not
+                this.$store.dispatch('fetchAccessControlList', this.id)
+                    .then(() => {
+                      let currentUser = this.$store.state.userInfo.userEmail;
+                      let accessControlList = this.$store.state.accessControl.accessControlList;
+                      let isPresentationEditable =
+                          currentUser === this.presentationFormCreatorIdentifier
+                          || accessControlList.some(
+                          acl => acl.userIdentifier === currentUser && acl.accessLevel === AccessLevel.CAN_WRITE)
+                          || accessControlList.some(
+                          acl => acl.userIdentifier === SPECIAL_IDENTIFIER_PUBLIC && acl.accessLevel
+                              === AccessLevel.CAN_WRITE);
+                      this.$store.commit('setIsPresentationEditable', isPresentationEditable)
+                    })
+              })
         }
       },
       downloadPDF() {
@@ -263,33 +289,46 @@
           });
         });
       },
-       sendPDF() {
-            let vm = this;
-            let currentUrl = window.location.href;
-            let wasPresentationEditable = deepCopy(vm.isPresentationEditable);
-            vm.$store.commit('setIsPresentationEditable', false);
-            vm.$store.commit('setPageLoadingStatus', true);
+      sendPDF() {
+        let vm = this;
+        let currentUrl = window.location.href;
+        let wasPresentationEditable = deepCopy(vm.isPresentationEditable);
+        vm.$store.commit('setIsPresentationEditable', false);
+        vm.$store.commit('setPageLoadingStatus', true);
 
-           this.$nextTick(() => {
-               send(vm.presentationFormName)
-                .then((blob) => {
-                    this.$store.dispatch('sendPresentation', {
-                        jsonMessage: {
-                            mailTo: [this.$store.state.userInfo.userEmail],
-                            mailSubject: "Backup " + vm.presentationFormName + " Presentation",
-                            mailContent: "A pdf copy of the " + vm.presentationFormName + " presentation is attached. " +
-                                "You can view the presentation at " + currentUrl,
-                            attachmentName: vm.presentationFormName + ".pdf"
-                        },
-                        pdfBlob: blob
-                    })
+        this.$nextTick(() => {
+          send(vm.presentationFormName)
+              .then((blob) => {
+                this.$store.dispatch('sendPresentation', {
+                  jsonMessage: {
+                    mailTo: [this.$store.state.userInfo.userEmail],
+                    mailSubject: "Backup " + vm.presentationFormName + " Presentation",
+                    mailContent: "A pdf copy of the " + vm.presentationFormName + " presentation is attached. " +
+                        "You can view the presentation at " + currentUrl,
+                    attachmentName: vm.presentationFormName + ".pdf"
+                  },
+                  pdfBlob: blob
                 })
-                .then(() => {
-                    vm.$store.commit('setIsPresentationEditable', wasPresentationEditable);
-                    vm.$store.commit('setPageLoadingStatus', false);
+              })
+              .then(() => {
+                vm.$store.commit('setIsPresentationEditable', wasPresentationEditable);
+                vm.$store.commit('setPageLoadingStatus', false);
+                this.$message({
+                  type: 'success',
+                  message: 'Presentation has been successfully emailed to "' + this.$store.state.userInfo.userEmail
+                      + '"!'
                 });
+              });
         });
-       }
+      },
+
+      handleDownloadCommand(command) {
+        if (command === "pdf") {
+          this.downloadPDF();
+        } else if (command === "email-self") {
+          this.sendPDF();
+        }
+      }
     },
 
     components: {
@@ -299,15 +338,11 @@
 </script>
 
 <style scoped>
-  .share_button_left_margin {
-    margin-left: 10px;
-  }
+    .share_button_left_margin {
+        margin-left: 10px;
+    }
 
-  .el-select {
-    width: 100%;
-  }
-
-  .errorMsg {
-    margin-bottom: 18px;
-  }
+    .errorMsg {
+        margin-bottom: 18px;
+    }
 </style>

@@ -35,6 +35,18 @@ export default {
         isUpdateRecordGroupSuccess: false
     },
     mutations: {
+        setReviewRecordUploadSuccess(state) {
+            state.recordGroupForm.reviewRecordUploadStatus = true;
+        },
+
+        setAuthorRecordUploadSuccess(state) {
+            state.recordGroupForm.authorRecordUploadStatus = true;
+        },
+
+        setSubmissionRecordUploadSuccess(state) {
+            state.recordGroupForm.submissionRecordUploadStatus = true;
+        },
+
         setRecordGroupListLoading(state, payload) {
             if (payload) {
                 state.recordGroupListStatus.isApiError = false;

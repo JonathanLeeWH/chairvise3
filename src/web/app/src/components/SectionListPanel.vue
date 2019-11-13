@@ -2,7 +2,7 @@
   <div>
     <el-row class="addRowRightAlign" v-if="isNewPresentation">
       <el-alert
-        title="Please create presentation before adding sections"
+        title="Remember to import data before adding sections"
         type="info"
         show-icon>
       </el-alert>
@@ -132,14 +132,23 @@
 
       addNewSection() {
         if (this.selectedNewSection.length === 0) {
+          this.$message({
+            type: 'error',
+            message: 'Please select a section to add!'
+          });
           return;
         }
+
         this.$store.dispatch('addSectionDetail', {
           presentationId: this.presentationId,
           selectedNewSection: this.selectedNewSection,
           dataSet: this.$store.state.userInfo.userEmail,
         }).then(() => {
-          this.selectedNewSection = ''
+          this.$message({
+            type: 'success',
+            message: 'Successfully added a new section!'
+          });
+          this.selectedNewSection = '';
         })
       }
     }
