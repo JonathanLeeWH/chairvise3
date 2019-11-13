@@ -22,7 +22,16 @@
             <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
             <el-input v-model="presentationFormDescription" v-if="isInEditMode" />
         </el-form-item>
-
+        <el-form-item label="Record Group" :prop="'recordGroup'">
+            <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroup }}</div>
+            <el-select v-if="isInEditMode" v-model="presentationFormRecordGroupId" placeholder="Record Groups">
+                <el-option v-for="recordGroup in recordGroups"
+                           :key="recordGroup.recordGroupName"
+                           :label="recordGroup.recordGroupName"
+                           :value="recordGroup.id">
+                </el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item>
             <el-dropdown @command="handleDownloadCommand" v-if="!isInEditMode && !isNewPresentation">
                 <el-button type="primary" style="margin-right: 10px">
@@ -115,8 +124,7 @@
         },
         set: function (value) {
           this.$store.commit('setPresentationFormField', {
-            field: 'recordGroupId',
-            value
+            field: 'recordGroupId', value
           })
         }
       },
