@@ -27,17 +27,16 @@
                             <el-button type="success" v-on:click="readyForDisplayRecordUploaded">Select</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-form :model="newRecordGroupForm" ref="recordGroupForm" class="recordUploaded"
-                             v-if="isReadyForDisplayRecordUploaded">
+                    <el-form :model="recordGroupForm" ref="recordGroupForm" class="recordUploaded"
+                             v-if="isReadyForDisplayRecordUploaded" :rules="rules">
                         <div class="upload-status">
-                            <label>Record Group Name: </label>
-                            <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
-                            <div class="row">
+                            <el-form-item label="Record Group Name" prop="name">
+                                <el-input v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
                                 <el-button type="warning" v-on:click="updateRecordGroup" icon="el-icon-edit">Edit
                                 </el-button>
                                 <el-button type="danger" v-on:click="deleteRecordGroup" icon="el-icon-delete">Delete
                                 </el-button>
-                            </div>
+                            </el-form-item>
                         </div>
                         <div class="upload-status author-record">
                             <label>Author Record: </label>

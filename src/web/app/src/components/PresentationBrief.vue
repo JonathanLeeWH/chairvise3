@@ -22,9 +22,10 @@
             <div v-if="!isInEditMode" id="presentation-description">{{ presentationForm.description }}</div>
             <el-input v-model="presentationFormDescription" v-if="isInEditMode" />
         </el-form-item>
-        <el-form-item label="Record Group" :prop=" isInEditMode ? 'recordGroup' : ''">
+        <el-form-item label="Record Group" :prop="isInEditMode ? 'recordGroup' : ''">
             <div v-if="!isInEditMode" id="presentation-record-group">{{ presentationForm.recordGroupName }}</div>
-            <el-select v-if="isInEditMode" v-model="presentationFormRecordGroupName" placeholder="Record Groups">
+            <el-select v-if="isInEditMode" v-model="presentationFormRecordGroupId"
+                       placeholder="Record Groups">
                 <el-option v-for="recordGroup in recordGroups"
                            :key="recordGroup.recordGroupName"
                            :label="recordGroup.recordGroupName"
@@ -252,6 +253,7 @@
         if (this.$refs['presentationForm']) {
           this.$refs['presentationForm'].clearValidate();
         }
+
         this.$store.commit('resetPresentationForm');
         if (this.id !== ID_NEW_PRESENTATION) {
           this.$store.dispatch('getPresentation', this.id)
