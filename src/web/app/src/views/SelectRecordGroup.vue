@@ -13,33 +13,6 @@
                             <el-button type="success" v-on:click="addRecordGroup">Add New Record Group</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-form :model="newRecordGroupForm" ref="recordGroupForm" class="recordUploaded"
-                             v-if="isReadyForAddRecord">
-                        <div class="upload-status">
-                            <label>Record Group Name: </label>
-                            <el-input :prop="'name'" v-model="recordGroupFormName">{{ recordGroupName }}</el-input>
-                            <el-button type="warning" v-on:click="updateRecordGroup" icon="el-icon-edit">Edit
-                            </el-button>
-                            <el-button type="danger" v-on:click="deleteRecordGroup" icon="el-icon-delete">Delete
-                            </el-button>
-                        </div>
-                        <div class="upload-status author-record">
-                            <label>Author Record: </label>
-                            <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                        </div>
-                        <div class="upload-status review-record">
-                            <label>Review Record: </label>
-                            <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                        </div>
-                        <div class="upload-status submission-record">
-                            <label>Submission Record: </label>
-                            <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
-                        </div>
-                        <import-data />
-                    </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="Select Existing Record Group">
                     <el-form>
@@ -68,18 +41,18 @@
                         </div>
                         <div class="upload-status author-record">
                             <label>Author Record: </label>
-                            <span class="uploaded" v-if="isAuthorRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                            <span class="uploaded" v-if="isAuthorRecordUploaded">Uploaded</span>
+                            <span class="not-uploaded" v-else>Not Uploaded</span>
                         </div>
                         <div class="upload-status review-record">
                             <label>Review Record: </label>
-                            <span class="uploaded" v-if="isReviewRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                            <span class="uploaded" v-if="isReviewRecordUploaded">Uploaded</span>
+                            <span class="not-uploaded" v-else>Not Uploaded</span>
                         </div>
                         <div class="upload-status submission-record">
                             <label>Submission Record: </label>
-                            <span class="uploaded" v-if="isSubmissionRecordUploaded">Already Uploaded</span>
-                            <span class="not-uploaded" v-else>Not Uploaded Yet</span>
+                            <span class="uploaded" v-if="isSubmissionRecordUploaded">Uploaded</span>
+                            <span class="not-uploaded" v-else>Not Uploaded</span>
                         </div>
                         <import-data />
                     </el-form>
@@ -219,12 +192,13 @@
                   return;
                 }
 
+                this.selectedRecordGroupId = this.$store.state.recordGroup.recordGroupForm.id;
                 this.isReadyForAddRecord = true;
                 this.isReadyForDisplayRecordUploaded = false;
                 this.$store.dispatch('getRecordGroupList');
                 this.$store.commit("setRecordGroup", this.$store.state.recordGroup.recordGroupForm.id);
                 this.$store.commit('setAddRecordGroupSuccess', true);
-                this.$confirm('You have successfully added a new record group!',
+                this.$confirm('You have successfully added a new record group "' + this.newRecordGroupFormName + '"!',
                     'Added Record Group', {
                       confirmButtonText: 'OK',
                       roundButton: true,
@@ -232,6 +206,7 @@
                       showCancelButton: false
                     }).then(() => {
                   this.closeSuccess();
+                  this.newRecordGroupFormName = '';
                 })
               });
         });
@@ -250,6 +225,7 @@
                 }
 
                 this.isReadyForDisplayRecordUploaded = false;
+                this.isReadyForAddRecord = false;
                 this.$store.commit('setDeleteRecordGroupSuccess', true);
                 this.$message({
                   type: 'success',
@@ -308,6 +284,7 @@
 
     .uploaded {
         color: #28a745;
+        font-weight: bold;
     }
 
     .not-uploaded {
